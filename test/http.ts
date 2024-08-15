@@ -20,7 +20,7 @@ let sessionInfo: SessionInfo = {
 // const decode = JwtDecode(sessionInfo.token);
 // console.log('JwtDecode :: ', decode);
 
-Http.API_BASE_URL = 'http://apidev.chintech.co';
+Http.API_BASE_URL = 'http://apidev.aaa.com';
 Http.TOKEN_URL = '/apisix/plugin/jwt/sign';
 const main = async () => {
   // const resp = await Http.Token(sessionInfo, 'userkey');
