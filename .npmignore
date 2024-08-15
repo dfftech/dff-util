@@ -4,3 +4,4 @@ src
 .vscode
 *.log
 test
+.gitignore
