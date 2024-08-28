@@ -86,12 +86,13 @@ export class Http {
     }
   }
 
-  static async Token(sessionInfo: any, key: string, type: RespType = RespType.TEXT) {
+  static async Token(sessionInfo: any, appKey: string, apiKey?: string, type: RespType = RespType.TEXT) {
     const url = `${Http.API_BASE_URL}${Http.TOKEN_URL}`;
-    const params = { key: key, payload: JSON.stringify(sessionInfo) };
+    const params = { key: appKey, payload: JSON.stringify(sessionInfo) };
     const fullUrl = `${url}?${new URLSearchParams(params).toString()}`;
+    const headers = { ...Headers, 'X-API-KEY': apiKey || '' };
     try {
-      const requestOptions: any = { method: 'GET', headers: HttpHeaders };
+      const requestOptions: any = { method: 'GET', headers: headers };
       const response = await fetch(fullUrl, requestOptions);
       return await Http.RespData(response, type);
     } catch (error: any) {
