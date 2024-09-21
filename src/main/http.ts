@@ -11,6 +11,12 @@ export const HttpHeaders = {
   authorization: null,
   'x-request-id': null,
 };
+
+export const BaseHeaders = {
+  authorization: null,
+  'x-request-id': null,
+};
+
 export class Http {
   static API_BASE_URL = process.env.API_BASE_URL;
   static TOKEN_URL = `/apisix/plugin/jwt/sign`;
@@ -104,11 +110,13 @@ export class Http {
   static async Upload(
     fullUrl: string,
     file: File,
+    isHeadersAddMultiForm: boolean = false,
     data: Record<string, any> = {},
-    headers: any = HttpHeaders,
+    headers: any = BaseHeaders,
     type: RespType = RespType.JSON,
   ) {
     const formData = new FormData();
+    console.log(file);
     formData.append('file', file);
 
     for (const key in data) {
@@ -116,13 +124,16 @@ export class Http {
         formData.append(key, data[key]);
       }
     }
-
+    if (isHeadersAddMultiForm) {
+      headers = { ...headers, 'Content-Type': 'multipart/form-data' };
+    }
     try {
       const requestOptions: any = {
         method: 'POST',
         body: formData,
-        headers: { ...headers, 'Content-Type': 'multipart/form-data' },
+        headers: { ...headers },
       };
+      console.log(requestOptions);
       const response = await fetch(fullUrl, requestOptions);
       return await Http.RespData(response, type);
     } catch (error: any) {
