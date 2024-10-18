@@ -6,7 +6,9 @@ export type SessionInfo = {
   role: string;
   requestId?: string;
   token?: string;
+  iat?: number;
   exp?: number;
+  key: string;
 };
 
 export type SessionUser = {

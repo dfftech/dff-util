@@ -16,7 +16,7 @@ export const AppUniqueCode = () => {
   return time.toString(36).toUpperCase();
 };
 
-export const AppUniqueCodeByType = (name: string, type = null) => {
+export const AppCodeByType = (name: string, type = null) => {
   let str: string = '';
   if (type) {
     str = type + '_' + name;
@@ -30,7 +30,7 @@ export const AppUniqueCodeByType = (name: string, type = null) => {
   return str.toUpperCase();
 };
 
-export const AppKey = (name: string) => {
+export const AppCode = (name: string) => {
   if (name == null) return null;
   let str: string = '';
   str = name.trim();
