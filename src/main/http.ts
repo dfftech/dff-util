@@ -113,6 +113,7 @@ export class Http {
     isHeadersAddMultiForm: boolean = false,
     data: Record<string, any> = {},
     headers: any = BaseHeaders,
+    method: 'POST' | 'PUT' = 'PUT',
     type: RespType = RespType.JSON,
   ) {
     const formData = new FormData();
@@ -129,7 +130,7 @@ export class Http {
     }
     try {
       const requestOptions: any = {
-        method: 'POST',
+        method: method,
         body: formData,
         headers: { ...headers },
       };
@@ -142,10 +143,10 @@ export class Http {
     }
   }
 
-  static async Download(fullUrl: string, params: any, headers: any = HttpHeaders) {
+  static async Download(fullUrl: string, params: any, headers: any = HttpHeaders, method: string = 'GET') {
     fullUrl = params ? `${fullUrl}?${new URLSearchParams(params).toString()}` : fullUrl;
     try {
-      const requestOptions: any = { method: 'GET', headers: headers || HttpHeaders };
+      const requestOptions: any = { method: method, headers: headers || HttpHeaders };
       const response = await fetch(fullUrl, requestOptions);
       const blob = await response.blob();
       const buffer = Buffer.from(await blob.arrayBuffer());
