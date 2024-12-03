@@ -126,7 +126,7 @@ export class Http {
       }
     }
     if (isHeadersAddMultiForm) {
-      headers = { ...headers, 'Content-Type': 'multipart/form-data' };
+      headers = { ...headers, 'Content-Type': headers['Content-Type'] || 'multipart/form-data' };
     }
     try {
       const requestOptions: any = {
