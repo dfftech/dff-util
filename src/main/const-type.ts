@@ -19,19 +19,8 @@ export type SessionUser = {
   role: string;
 };
 
-export const ErrorResponse = (message: string, error?: any) => {
-  return {
-    status: 0,
-    type: 'ERROR',
-    message: message,
-    error: error,
-  };
-};
-
-export const SuccessResponse = (data: any) => {
-  return {
-    status: 1,
-    type: 'SUCCESS',
-    data: data,
-  };
+export type ResponseType = {
+  status?: string | number;
+  data?: any;
+  error?: any;
 };

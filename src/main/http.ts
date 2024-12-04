@@ -107,7 +107,7 @@ export class Http {
     }
   }
 
-  static async Upload(
+  static async FormUpload(
     fullUrl: string,
     file: File,
     isHeadersAddMultiForm: boolean = false,
@@ -117,7 +117,6 @@ export class Http {
     type: RespType = RespType.JSON,
   ) {
     const formData = new FormData();
-    console.log(file);
     formData.append('file', file);
 
     for (const key in data) {
@@ -143,7 +142,25 @@ export class Http {
     }
   }
 
-  static async Download(fullUrl: string, params: any, headers: any = HttpHeaders, method: string = 'GET') {
+  static async CloudUpload(fullUrl: string, file: File, headers: any = null, method: 'POST' | 'PUT' = 'PUT') {
+    headers = headers || {
+      'Content-Type': file.type,
+    };
+    try {
+      const requestOptions: any = {
+        method: method,
+        body: file,
+        headers: { ...headers },
+      };
+      const response = await fetch(fullUrl, requestOptions);
+      return response;
+    } catch (error: any) {
+      console.error('HttpUpload error: ', error);
+      throw { url: fullUrl, requestId: HttpHeaders['x-request-id'], error: error };
+    }
+  }
+
+  static async FileDownload(fullUrl: string, params: any, headers: any = HttpHeaders, method: string = 'GET') {
     fullUrl = params ? `${fullUrl}?${new URLSearchParams(params).toString()}` : fullUrl;
     try {
       const requestOptions: any = { method: method, headers: headers || HttpHeaders };

@@ -196,26 +196,15 @@ export type SessionUser = {
 };
 ```
 
-## ErrorResponse
+## ResponseType
 
 ```
-new ErrorResponse(message): {
-    status: 0,
-    message: 'ERROR',
-    data: message
-}
-```
-
-## SuccessResponse
-
-```
-export const SuccessResponse = (data: any) => {
-  return {
-    status: 1,
-    type: 'SUCCESS',
-    data: data,
-  };
+ResponseType = {
+  status?: string | number;
+  data?: any;
+  error?: any;
 };
+
 ```
 
 ## file upload test
