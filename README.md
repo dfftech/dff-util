@@ -175,7 +175,7 @@ export type SessionInfo = {
   email?: string;
   mobile?: string;
   name?: string;
-  role: string;
+  roles: string[];
   requestId?: string;
   token?: string;
   iat?: number;
@@ -192,7 +192,7 @@ export type SessionUser = {
   email?: string;
   mobile?: string;
   name?: string;
-  role: string;
+  roles: string[];
 };
 ```
 
