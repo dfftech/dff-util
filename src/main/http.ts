@@ -43,7 +43,7 @@ export class Http {
     }
   }
   static async Get(url: string, params: any, headers: any, type: RespType = RespType.JSON) {
-    url = Http.API_BASE_URL + url;
+    url = url.startsWith('http') ? url : Http.API_BASE_URL + url;
     const fullUrl = params ? `${url}?${new URLSearchParams(params).toString()}` : url;
     try {
       const requestOptions: any = { method: 'GET', headers: headers || HttpHeaders };
@@ -56,7 +56,7 @@ export class Http {
   }
 
   static async Post(url: string, data: any, headers: any, type: RespType = RespType.JSON) {
-    url = Http.API_BASE_URL + url;
+    url = url.startsWith('http') ? url : Http.API_BASE_URL + url;
     try {
       const requestOptions: any = { method: 'POST', body: JSON.stringify(data || {}), headers: headers || HttpHeaders };
       const response = await fetch(url, requestOptions);
@@ -68,7 +68,7 @@ export class Http {
   }
 
   static async Put(url: string, data: any, headers: any, type: RespType = RespType.JSON) {
-    url = Http.API_BASE_URL + url;
+    url = url.startsWith('http') ? url : Http.API_BASE_URL + url;
     try {
       const requestOptions: any = { method: 'PUT', body: JSON.stringify(data || {}), headers: headers || HttpHeaders };
       const response = await fetch(url, requestOptions);
@@ -80,7 +80,7 @@ export class Http {
   }
 
   static async Delete(url: string, params: any, headers: any, type: RespType = RespType.JSON) {
-    url = Http.API_BASE_URL + url;
+    url = url.startsWith('http') ? url : Http.API_BASE_URL + url;
     const fullUrl = params ? `${url}?${new URLSearchParams(params).toString()}` : url;
     try {
       const requestOptions: any = { method: 'DELETE', headers: headers || HttpHeaders };
@@ -108,7 +108,7 @@ export class Http {
   }
 
   static async FormUpload(
-    fullUrl: string,
+    url: string,
     file: File,
     isHeadersAddMultiForm: boolean = false,
     data: Record<string, any> = {},
@@ -116,6 +116,7 @@ export class Http {
     method: 'POST' | 'PUT' = 'PUT',
     type: RespType = RespType.JSON,
   ) {
+    url = url.startsWith('http') ? url : Http.API_BASE_URL + url;
     const formData = new FormData();
     formData.append('file', file);
 
@@ -134,11 +135,11 @@ export class Http {
         headers: { ...headers },
       };
       console.log(requestOptions);
-      const response = await fetch(fullUrl, requestOptions);
+      const response = await fetch(url, requestOptions);
       return await Http.RespData(response, type);
     } catch (error: any) {
       console.error('HttpUpload error: ', error);
-      throw { url: fullUrl, requestId: HttpHeaders['x-request-id'], error: error };
+      throw { url: url, requestId: HttpHeaders['x-request-id'], error: error };
     }
   }
 

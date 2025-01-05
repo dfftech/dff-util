@@ -2,6 +2,10 @@
 
 ```
 Http calls
+
+**note: if url start with http then it ignoring API_BASE_URL, logic is given below.
+>>>> url = url.startsWith('http') ? url : Http.API_BASE_URL + url;
+
 ```
 
 ## util
