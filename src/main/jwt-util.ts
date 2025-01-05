@@ -1,4 +1,5 @@
-import { SignJWT, jwtVerify, decodeJwt } from 'jose';
+import jwtEncode from 'jwt-encode';
+import { jwtDecode } from 'jwt-decode';
 
 /**
  * Encode JWT Token with secret key, expiresIn in seconds (86400 = 1 day) default
@@ -7,13 +8,16 @@ import { SignJWT, jwtVerify, decodeJwt } from 'jose';
  * @param expiresIn
  * @returns
  */
-export const JwtEncode = async (data: any, secret: string, expiresIn = 86400) => {
-  const secretKey = new TextEncoder().encode(secret);
-  const token = await new SignJWT(data)
-    .setProtectedHeader({ alg: 'HS256' })
-    .setExpirationTime(`${expiresIn}s`)
-    .sign(secretKey);
-  return token;
+export const JwtEncode = (data: any, secret: string, expiresIn = 86400) => {
+  try {
+    const exp = Math.floor(Date.now() / 1000) + expiresIn;
+    const payload = { ...data, exp };
+    const token = jwtEncode(payload, secret);
+    return token;
+  } catch (err) {
+    console.error('Error encoding JWT:', err);
+    throw new Error('Error encoding JWT');
+  }
 };
 
 /**
@@ -22,20 +26,31 @@ export const JwtEncode = async (data: any, secret: string, expiresIn = 86400) =>
  * @param secret
  * @returns
  */
-export const JwtVerify = async (token: string, secret: string) => {
+export const JwtVerify = (token: string, secret: string) => {
   if (token) {
     try {
       token = token.replace(/jwt |JWT |Bearer |bearer |BEARER /g, '');
-      const secretKey = new TextEncoder().encode(secret);
-      const { payload } = await jwtVerify(token, secretKey, {
-        algorithms: ['HS256'],
-      });
-      return payload;
+      const decoded: any = jwtDecode(token);
+      const currentTime = Math.floor(Date.now() / 1000);
+
+      // Check if token is expired
+      if (decoded.exp && decoded.exp < currentTime) {
+        throw new Error('Token has expired');
+      }
+
+      // Since `jwt-encode` doesn't provide signature verification, manually check if the payload matches.
+      const regeneratedToken = jwtEncode(decoded, secret);
+      if (token !== regeneratedToken) {
+        throw new Error('Token is not valid');
+      }
+
+      return decoded;
     } catch (err) {
-      throw { name: 'error', message: 'Token is not valid' };
+      console.error('Invalid JWT:', err);
+      throw new Error('Token is not valid');
     }
   } else {
-    throw { name: 'error', message: 'Auth token is not supplied' };
+    throw new Error('Auth token is not supplied');
   }
 };
 
@@ -48,13 +63,14 @@ export const JwtDecode = (token: string) => {
   if (token) {
     try {
       token = token.replace(/jwt |JWT |Bearer |bearer |BEARER /g, '');
-      return decodeJwt(token);
+      const decoded = jwtDecode(token);
+      return decoded;
     } catch (err) {
-      console.error(err);
-      throw { name: 'error', message: 'Token is not valid' };
+      console.error('Error decoding JWT:', err);
+      throw new Error('Token is not valid');
     }
   } else {
-    throw { name: 'error', message: 'Auth token is not supplied' };
+    throw new Error('Auth token is not supplied');
   }
 };
 
@@ -68,12 +84,9 @@ export const JwtValid = (token: string) => {
     if (!token) {
       return false;
     }
-    const payload = decodeJwt(token);
+    const decoded: any = jwtDecode(token);
     const currentTime = Math.floor(Date.now() / 1000);
-    if (payload.exp && payload.exp < currentTime) {
-      return false;
-    }
-    return true;
+    return !(decoded.exp && decoded.exp < currentTime);
   } catch (error) {
     console.error('Invalid JWT:', error);
     return false;
