@@ -1,6 +1,6 @@
-// bun run tests/jwt.ts
+// bun run src/tests/jwt.ts
 
-import { JwtEncode, JwtVerify, JwtDecode, JwtValid } from '../src/index';
+import { JwtEncode, JwtVerify, JwtDecode, JwtValid } from '../index';
 
 const runJwtExamples = async () => {
   const secret = 'your-secret-key';
