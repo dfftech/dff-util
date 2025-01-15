@@ -1,3 +1,6 @@
+import { blob } from 'stream/consumers';
+import { AppUUID4 } from './util';
+
 export enum RespType {
   JSON = 'json',
   TEXT = 'text',
@@ -23,7 +26,12 @@ export class Http {
 
   private static async RespData(response: Response, type: RespType = RespType.JSON) {
     if (!response.ok) {
-      throw { status: response.status || 0, statusText: response.statusText || response };
+      const data = await response.text();
+      if ((data && data.startsWith('{')) || data.startsWith('[')) {
+        throw JSON.parse(data);
+      } else {
+        throw data;
+      }
     }
     switch (type) {
       case RespType.JSON:
@@ -45,50 +53,54 @@ export class Http {
   static async Get(url: string, params: any, headers: any, type: RespType = RespType.JSON) {
     url = url.startsWith('http') ? url : Http.API_BASE_URL + url;
     const fullUrl = params ? `${url}?${new URLSearchParams(params).toString()}` : url;
+    headers = headers || HttpHeaders;
+    headers['x-request-id'] = headers['x-request-id'] || AppUUID4();
     try {
-      const requestOptions: any = { method: 'GET', headers: headers || HttpHeaders };
+      const requestOptions: any = { method: 'GET', headers: headers };
       const response = await fetch(fullUrl, requestOptions);
       return await Http.RespData(response, type);
     } catch (error: any) {
-      console.error('HttpGet error: ', error);
-      throw { url: fullUrl, requestId: HttpHeaders['x-request-id'], error: error };
+      throw { url: fullUrl, requestId: headers['x-request-id'], error: error };
     }
   }
 
   static async Post(url: string, data: any, headers: any, type: RespType = RespType.JSON) {
     url = url.startsWith('http') ? url : Http.API_BASE_URL + url;
+    headers = headers || HttpHeaders;
+    headers['x-request-id'] = headers['x-request-id'] || AppUUID4();
     try {
-      const requestOptions: any = { method: 'POST', body: JSON.stringify(data || {}), headers: headers || HttpHeaders };
+      const requestOptions: any = { method: 'POST', body: JSON.stringify(data), headers: headers };
       const response = await fetch(url, requestOptions);
       return await Http.RespData(response, type);
     } catch (error: any) {
-      console.error('HttpPost error: ', error);
-      throw { url: url, requestId: HttpHeaders['x-request-id'], body: data, error: error };
+      throw { url: url, requestId: headers['x-request-id'], body: data, error: error };
     }
   }
 
   static async Put(url: string, data: any, headers: any, type: RespType = RespType.JSON) {
     url = url.startsWith('http') ? url : Http.API_BASE_URL + url;
+    headers = headers || HttpHeaders;
+    headers['x-request-id'] = headers['x-request-id'] || AppUUID4();
     try {
-      const requestOptions: any = { method: 'PUT', body: JSON.stringify(data || {}), headers: headers || HttpHeaders };
+      const requestOptions: any = { method: 'PUT', body: JSON.stringify(data), headers: headers };
       const response = await fetch(url, requestOptions);
       return await Http.RespData(response, type);
     } catch (error: any) {
-      console.error('HttpPut error: ', error);
-      throw { url: url, requestId: HttpHeaders['x-request-id'], body: data, error: error };
+      throw { url: url, requestId: headers['x-request-id'], body: data, error: error };
     }
   }
 
   static async Delete(url: string, params: any, headers: any, type: RespType = RespType.JSON) {
     url = url.startsWith('http') ? url : Http.API_BASE_URL + url;
     const fullUrl = params ? `${url}?${new URLSearchParams(params).toString()}` : url;
+    headers = headers || HttpHeaders;
+    headers['x-request-id'] = headers['x-request-id'] || AppUUID4();
     try {
-      const requestOptions: any = { method: 'DELETE', headers: headers || HttpHeaders };
+      const requestOptions: any = { method: 'DELETE', headers: headers };
       const response = await fetch(fullUrl, requestOptions);
       return await Http.RespData(response, type);
     } catch (error: any) {
-      console.error('HttpDelete error: ', error);
-      throw { url: fullUrl, requestId: HttpHeaders['x-request-id'], error: error };
+      throw { url: fullUrl, requestId: headers['x-request-id'], error: error };
     }
   }
 
@@ -96,14 +108,14 @@ export class Http {
     const url = `${Http.API_BASE_URL}${Http.TOKEN_URL}`;
     const params = { key: appKey, payload: JSON.stringify(sessionInfo) };
     const fullUrl = `${url}?${new URLSearchParams(params).toString()}`;
-    const headers = { ...Headers, 'X-API-KEY': apiKey || '' };
+    const headers: any = { ...Headers, 'X-API-KEY': apiKey || '' };
+    headers['x-request-id'] = headers['x-request-id'] || AppUUID4();
     try {
       const requestOptions: any = { method: 'GET', headers: headers };
       const response = await fetch(fullUrl, requestOptions);
       return await Http.RespData(response, type);
     } catch (error: any) {
-      console.error('HttpToken error: ', error);
-      throw { url: fullUrl, requestId: HttpHeaders['x-request-id'], error: error };
+      throw { url: fullUrl, requestId: headers['x-request-id'], error: error };
     }
   }
 
@@ -119,7 +131,6 @@ export class Http {
     url = url.startsWith('http') ? url : Http.API_BASE_URL + url;
     const formData = new FormData();
     formData.append('file', file);
-
     for (const key in data) {
       if (data[key] !== undefined && data[key] !== null) {
         formData.append(key, data[key]);
@@ -128,18 +139,17 @@ export class Http {
     if (isHeadersAddMultiForm) {
       headers = { ...headers, 'Content-Type': headers['Content-Type'] || 'multipart/form-data' };
     }
+    headers['x-request-id'] = headers['x-request-id'] || AppUUID4();
     try {
       const requestOptions: any = {
         method: method,
         body: formData,
         headers: { ...headers },
       };
-      console.log(requestOptions);
       const response = await fetch(url, requestOptions);
       return await Http.RespData(response, type);
     } catch (error: any) {
-      console.error('HttpUpload error: ', error);
-      throw { url: url, requestId: HttpHeaders['x-request-id'], error: error };
+      throw { url: url, requestId: headers['x-request-id'], error: error };
     }
   }
 
@@ -147,6 +157,7 @@ export class Http {
     headers = headers || {
       'Content-Type': file.type,
     };
+    headers['x-request-id'] = headers['x-request-id'] || AppUUID4();
     try {
       const requestOptions: any = {
         method: method,
@@ -156,22 +167,22 @@ export class Http {
       const response = await fetch(fullUrl, requestOptions);
       return response;
     } catch (error: any) {
-      console.error('HttpUpload error: ', error);
-      throw { url: fullUrl, requestId: HttpHeaders['x-request-id'], error: error };
+      throw { url: fullUrl, requestId: headers['x-request-id'], error: error };
     }
   }
 
   static async FileDownload(fullUrl: string, params: any, headers: any = HttpHeaders, method: string = 'GET') {
     fullUrl = params ? `${fullUrl}?${new URLSearchParams(params).toString()}` : fullUrl;
+    headers = headers || HttpHeaders;
+    headers['x-request-id'] = headers['x-request-id'] || AppUUID4();
     try {
-      const requestOptions: any = { method: method, headers: headers || HttpHeaders };
+      const requestOptions: any = { method: method, headers: headers };
       const response = await fetch(fullUrl, requestOptions);
       const blob = await response.blob();
       const buffer = Buffer.from(await blob.arrayBuffer());
       return buffer;
     } catch (error: any) {
-      console.error('HttpDownload error: ', error);
-      throw { url: fullUrl, requestId: HttpHeaders['x-request-id'], error: error };
+      throw { url: fullUrl, requestId: headers['x-request-id'], error: error };
     }
   }
 }
