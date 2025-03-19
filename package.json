@@ -1,0 +1,31 @@
+{
+  "name": "dff-util",
+  "version": "1.1.4",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "npm",
+    "dff",
+    "util"
+  ],
+  "author": "DesignForFeature",
+  "license": "MIT",
+  "description": "DesignForFeature Utilities",
+  "devDependencies": {
+    "@types/jwt-encode": "^1.0.3",
+    "@types/node": "^22.10.5",
+    "@types/randomstring": "^1.3.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.2"
+  },
+  "dependencies": {
+    "jwt-decode": "^4.0.0",
+    "jwt-encode": "^1.0.1",
+    "randomstring": "1.3.0"
+  }
+}
