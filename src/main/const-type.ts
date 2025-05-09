@@ -5,6 +5,7 @@ export type SessionInfo = {
   name?: string;
   roles: string[];
   requestId?: string;
+  type?: string;
   token?: string;
   iat?: number;
   exp?: number;
@@ -17,6 +18,7 @@ export type SessionUser = {
   mobile?: string;
   name?: string;
   roles: string[];
+  type?: string;
 };
 
 export type ResponseType = {

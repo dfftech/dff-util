@@ -214,6 +214,7 @@ export type SessionInfo = {
   mobile?: string;
   name?: string;
   roles: string[];
+  type?: string;
   requestId?: string;
   token?: string;
   iat?: number;
@@ -231,6 +232,7 @@ export type SessionUser = {
   mobile?: string;
   name?: string;
   roles: string[];
+  type?: string;
 };
 ```
 
