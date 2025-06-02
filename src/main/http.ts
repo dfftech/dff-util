@@ -21,7 +21,7 @@ export const BaseHeaders = {
 };
 
 export class Http {
-  static API_BASE_URL = process.env.API_BASE_URL;
+  static API_BASE_URL = "";
   static TOKEN_URL = `/apisix/plugin/jwt/sign`;
 
   private static async RespData(response: Response, type: RespType = RespType.JSON) {
