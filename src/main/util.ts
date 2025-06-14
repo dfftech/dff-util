@@ -1,5 +1,8 @@
 import { generate } from "randomstring";
-import { RegExp } from "./regexr";
+import { RegExp } from "./reg-exr";
+import { CountryType, LangCountryType, LanguageType } from "./const-type";
+import { countries } from "./countries";
+import { languages } from "./languages";
 
 export const AppRandomString = (length: number, charset: string) => {
   return generate({ length: length, charset: charset });
@@ -77,7 +80,7 @@ export const AppUUID4 = () => {
   });
 };
 
-export const LangData = async (
+export const LangText = async (
   data: string,
   source: string,
   target: string,
@@ -104,4 +107,43 @@ export const LangData = async (
   }
 
   return json.translation || "";
+};
+
+export const CurrencyConvert = async (from: string, to: string): Promise<number> => {
+  if (!from || !to) {
+    throw new Error("Invalid input: from or to is missing");
+  }
+  if (from === to) {
+    return 1;
+  }
+  try {
+    const url = `https://api.frankfurter.app/latest?from=${from}&to=${to}`;
+    const res = await fetch(url, {
+      method: "GET",
+    });
+    if (!res.ok) {
+      throw new Error(`Currency conversion failed: ${res.status} ${res.statusText}`);
+    }
+    const json = await res.json();
+    return json.rates[to];
+  } catch (error) {
+    throw new Error(`Currency conversion failed: ${error}`);
+  }
+};
+
+export const LangCountryCode = (lang: string) : LangCountryType => {
+  const countryCode = lang.split("-")[1];
+  const country = countries.find((c) => c.code === countryCode) || {} as CountryType;
+  const language = languages.find((l) => l.lang === lang) || {} as LanguageType;
+  return {
+    lang: lang,
+    country: countryCode,
+    name: language.name,
+    locale: language.locale,
+    currencyCode: country.currencyCode,
+    currency: country.currency,
+    telCode: country.telCode,
+    flag: country.flag,
+    dir: language.dir,
+  };
 };
