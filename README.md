@@ -273,9 +273,10 @@ export type CountryType = {
 };
 ```
 
-## LangDirType
+## LangDirType, OrderType
 ```
 export type LangDirType = "ltr" | "rtl";
+export type OrderType = "ASC" | "DESC";
 ```
 ## LanguageType
 ```

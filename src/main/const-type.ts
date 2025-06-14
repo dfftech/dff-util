@@ -48,6 +48,7 @@ export type CountryType = {
 };
 
 export type LangDirType = "ltr" | "rtl";
+export type OrderType = "ASC" | "DESC";
 
 export type LanguageType = {
   lang: string;        // Locale code (e.g., en-US, hi-IN)
