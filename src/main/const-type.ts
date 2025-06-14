@@ -49,6 +49,22 @@ export type CountryType = {
 
 export type LangDirType = "ltr" | "rtl";
 export type OrderType = "ASC" | "DESC";
+export type ThemeType = "light" | "dark";
+export type UnixTimestampType = number & { __brand: "UnixTimestamp" };
+
+export type OptionType = {
+  label: string;
+  key: string | number;
+  disabled?: boolean;
+  icon?: string;
+  lang?: Record<string, string>;
+};
+
+export type FileType = {
+  filename: string;
+  mimetype: string;
+  url: string;
+};
 
 export type LanguageType = {
   lang: string;        // Locale code (e.g., en-US, hi-IN)

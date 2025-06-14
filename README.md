@@ -136,6 +136,34 @@ ConstValue = {
   STR_AND: 'AND',
   STR_OR: 'OR',
   STR_NOT: 'NOT',
+
+  ASC: 'ASC',
+  DESC: 'DESC',
+
+  LTR: 'ltr',
+  RTL: 'rtl',
+
+  AM: 'AM',
+  PM: 'PM',
+
+  LIGHT: 'light',
+  DARK: 'dark',
+
+  MonthNames: [
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
+  ]
+
 };
 ```
 
@@ -273,10 +301,26 @@ export type CountryType = {
 };
 ```
 
-## LangDirType, OrderType
+## LangDirType, OrderType, ThemeType, UnixTimestampType, OptionType, FileType
 ```
 export type LangDirType = "ltr" | "rtl";
 export type OrderType = "ASC" | "DESC";
+export type ThemeType = "light" | "dark";
+export type UnixTimestampType = number & { __brand: "UnixTimestamp" };
+
+export type OptionType = {
+  label: string;
+  key: string | number;
+  disabled?: boolean;
+  icon?: string;
+  lang?: Record<string, string>;
+};
+
+export type FileType = {
+  filename: string;
+  mimetype: string;
+  url: string;
+};
 ```
 ## LanguageType
 ```
@@ -303,6 +347,8 @@ export type LangCountryType = {
   dir: "ltr" | "rtl"; // Text direction
 };
 ```
+
+
 
 ## ConstMessages
 
@@ -761,3 +807,5 @@ export type AllLanguageCodesType =
   | "en-ZM"
   | "en-ZW";
 ```
+
+###  Available methods TruncateText, DateTime24HrFormat,DateTime12HrFormat, DateAndTime, TimeAgo

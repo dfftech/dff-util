@@ -3,6 +3,7 @@ import { RegExp } from "./reg-exr";
 import { CountryType, LangCountryType, LanguageType } from "./const-type";
 import { countries } from "./countries";
 import { languages } from "./languages";
+import { ConstValue } from "./const-value";
 
 export const AppRandomString = (length: number, charset: string) => {
   return generate({ length: length, charset: charset });
@@ -80,6 +81,79 @@ export const AppUUID4 = () => {
   });
 };
 
+export const TruncateText = (input: string, maxLength: number): string => {
+  if (input?.length > maxLength) {
+    return input.substring(0, maxLength) + "...";
+  }
+
+  return input;
+};
+
+export const DateTime24HrFormat = (time: string) => {
+  const [timeStr, modifier] = time.split(" ");
+  let [hours, minutes] = timeStr.split(":").map(Number);
+
+  if (modifier === "AM") {
+    if (hours === 12) hours = 0;
+  } else if (modifier === "PM") {
+    if (hours !== 12) hours += 12;
+  }
+
+  return `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:00`;
+};
+
+export const DateTime12HrFormat = (
+  timestamp: Date,
+  showDate: boolean = true,
+  showTime?: boolean,
+): string => {
+  const newDate = new Date(timestamp);
+  const months = ConstValue.MonthNames;
+  const day = String(newDate.getDate()).padStart(2, "0");
+  const month = months[newDate.getMonth()];
+  const year = newDate.getFullYear();
+  let hours = newDate.getHours();
+  const minutes = String(newDate.getMinutes()).padStart(2, "0");
+  const ampm = hours >= 12 ? "PM" : "AM";
+
+  hours = hours % 12;
+  hours = hours ? hours : 12;
+  const date = showDate ? `${day} ${month} ${year}` : "";
+  const time = showTime ? `${hours}:${minutes} ${ampm}` : "";
+
+  return `${date} ${time}`;
+};
+
+export const DateAndTime = (
+  dateString: string,
+  timeString: string,
+): Date | null => {
+  if (!dateString) return null;
+  const validTimeString = timeString || "00:00:00";
+  const combined = new Date(`${dateString}T${validTimeString}Z`);
+
+  return isNaN(combined.getTime()) ? null : combined;
+};
+
+export const TimeAgo = (date: Date): string => {
+  const now = new Date().getTime();
+  const diff = now - new Date(date).getTime();
+  const minutes = Math.floor(diff / 60000);
+  const hours = Math.floor(diff / 3600000);
+  const days = Math.floor(diff / 86400000);
+
+  if (days > 1) return `${days} days ago`;
+  if (days === 1) return "1 day ago";
+  if (hours > 1) return `${hours} hours ago`;
+  if (hours === 1) return "1 hour ago";
+  if (minutes > 1) return `${minutes} minutes ago`;
+  if (minutes === 1) return "1 minute ago";
+
+  return "Just now";
+};
+
+
+
 export const LangText = async (
   data: string,
   source: string,
@@ -109,6 +183,25 @@ export const LangText = async (
   return json.translation || "";
 };
 
+
+
+export const LangCountryCode = (lang: string) : LangCountryType => {
+  const countryCode = lang.split("-")[1];
+  const country = countries.find((c) => c.code === countryCode) || {} as CountryType;
+  const language = languages.find((l) => l.lang === lang) || {} as LanguageType;
+  return {
+    lang: lang,
+    country: countryCode,
+    name: language.name,
+    locale: language.locale,
+    currencyCode: country.currencyCode,
+    currency: country.currency,
+    telCode: country.telCode,
+    flag: country.flag,
+    dir: language.dir,
+  };
+};
+
 export const CurrencyConvert = async (from: string, to: string): Promise<number> => {
   if (!from || !to) {
     throw new Error("Invalid input: from or to is missing");
@@ -129,21 +222,4 @@ export const CurrencyConvert = async (from: string, to: string): Promise<number>
   } catch (error) {
     throw new Error(`Currency conversion failed: ${error}`);
   }
-};
-
-export const LangCountryCode = (lang: string) : LangCountryType => {
-  const countryCode = lang.split("-")[1];
-  const country = countries.find((c) => c.code === countryCode) || {} as CountryType;
-  const language = languages.find((l) => l.lang === lang) || {} as LanguageType;
-  return {
-    lang: lang,
-    country: countryCode,
-    name: language.name,
-    locale: language.locale,
-    currencyCode: country.currencyCode,
-    currency: country.currency,
-    telCode: country.telCode,
-    flag: country.flag,
-    dir: language.dir,
-  };
 };

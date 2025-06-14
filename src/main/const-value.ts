@@ -41,4 +41,32 @@ export const ConstValue = {
   STR_AND: 'AND',
   STR_OR: 'OR',
   STR_NOT: 'NOT',
+
+  ASC: 'ASC',
+  DESC: 'DESC',
+
+  LTR: 'ltr',
+  RTL: 'rtl',
+
+  AM: 'AM',
+  PM: 'PM',
+
+  LIGHT: 'light',
+  DARK: 'dark',
+
+  MonthNames: [
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
+  ]
+
 };
