@@ -162,7 +162,15 @@ ConstValue = {
   "Oct",
   "Nov",
   "Dec",
-  ]
+  ],
+
+  HTTP_METHODS: {
+    GET: "GET",
+    POST: "POST",
+    PUT: "PUT",
+    DELETE: "DELETE"
+  }
+
 
 };
 ```
@@ -363,7 +371,7 @@ export type SearchByType = {
   searchTerm?: string;
 };
 
-export type ResponseLimitType = {
+export type PaginationResponseType = {
   status?: string | number;
   data?: any;
   error?: any;

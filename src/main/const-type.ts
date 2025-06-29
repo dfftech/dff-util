@@ -34,7 +34,7 @@ export type SearchByType = {
   searchTerm?: string;
 };
 
-export type ResponseLimitType = {
+export type PaginationResponseType = {
   status?: string | number;
   data?: any;
   error?: any;

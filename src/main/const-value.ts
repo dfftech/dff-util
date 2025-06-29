@@ -67,6 +67,13 @@ export const ConstValue = {
   "Oct",
   "Nov",
   "Dec",
-  ]
+  ],
+
+  HTTP_METHODS: {
+    GET: "GET",
+    POST: "POST",
+    PUT: "PUT",
+    DELETE: "DELETE"
+  }
 
 };
