@@ -20,6 +20,13 @@ export const BaseHeaders = {
   'x-request-id': null,
 };
 
+export const HttpMethods = {
+  GET: "GET",
+  POST: "POST",
+  PUT: "PUT",
+  DELETE: "DELETE"
+};
+
 export class Http {
   static API_BASE_URL = "";
   static TOKEN_URL = `/apisix/plugin/jwt/sign`;

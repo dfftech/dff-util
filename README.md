@@ -164,14 +164,6 @@ ConstValue = {
   "Dec",
   ],
 
-  HTTP_METHODS: {
-    GET: "GET",
-    POST: "POST",
-    PUT: "PUT",
-    DELETE: "DELETE"
-  }
-
-
 };
 ```
 
@@ -375,7 +367,7 @@ export type PaginationResponseType = {
   status?: string | number;
   data?: any;
   error?: any;
-  count?: number;
+  total?: number;
   skip?: number;
   limit?: number;
 };

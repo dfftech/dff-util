@@ -38,7 +38,7 @@ export type PaginationResponseType = {
   status?: string | number;
   data?: any;
   error?: any;
-  count?: number;
+  total?: number;
   skip?: number;
   limit?: number;
 };
