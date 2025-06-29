@@ -25,7 +25,22 @@ export type ResponseType = {
   status?: string | number;
   data?: any;
   error?: any;
-  total?: number;
+};
+
+export type SearchByType = {
+  query?: Record<string, any>;
+  orderBy?: string;
+  order?: "ASC" | "DESC";
+  searchTerm?: string;
+};
+
+export type ResponseLimitType = {
+  status?: string | number;
+  data?: any;
+  error?: any;
+  count?: number;
+  skip?: number;
+  limit?: number;
 };
 
 export type SearchByLimitType = {
@@ -33,7 +48,8 @@ export type SearchByLimitType = {
   skip: number;
   query?: Record<string, any>;
   orderBy?: string;
-  order: "ASC" | "DESC";
+  order?: "ASC" | "DESC";
+  searchTerm?: string;
 };
 
 export type CountryType = {

@@ -9,20 +9,20 @@ const CallLangCountry = () => {
 };
 
 const CallLangText = async () => {
-  const resp = await LangText("Hello, how are you?", "en-US", "te-IN");
+  const resp = await LangText("Hello, how are you?", "en-US", "hi-IN");
   console.log("Resp Kannada:: ", resp);
 }
 
 const CallCurrencyConvert = async () => {
-  const resp = await CurrencyConvert("INR", "USD");
+  const resp = await CurrencyConvert("USD", "INR");
   console.log("Resp Currency:: ", resp);
 }
 
 import { LangText } from "../main/util";
 
 const run = async () => {
-  await CallLangCountry();
-  await CallLangText();
+ // await CallLangCountry();
+ // await CallLangText();
   await CallCurrencyConvert();
 };
 

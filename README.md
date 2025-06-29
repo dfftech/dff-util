@@ -348,6 +348,40 @@ export type LangCountryType = {
 };
 ```
 
+## Types
+```
+export type ResponseType = {
+  status?: string | number;
+  data?: any;
+  error?: any;
+};
+
+export type SearchByType = {
+  query?: Record<string, any>;
+  orderBy?: string;
+  order?: "ASC" | "DESC";
+  searchTerm?: string;
+};
+
+export type ResponseLimitType = {
+  status?: string | number;
+  data?: any;
+  error?: any;
+  count?: number;
+  skip?: number;
+  limit?: number;
+};
+
+export type SearchByLimitType = {
+  limit: number;
+  skip: number;
+  query?: Record<string, any>;
+  orderBy?: string;
+  order?: "ASC" | "DESC";
+  searchTerm?: string;
+};
+```
+
 
 
 ## ConstMessages
