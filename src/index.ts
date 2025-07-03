@@ -8,3 +8,4 @@ export * from './main/const-keys';
 export * from './main/const-messages';
 export * from './main/countries';
 export * from './main/languages';
+export * from './main/case-mapper';

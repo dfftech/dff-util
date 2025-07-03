@@ -843,3 +843,76 @@ export type AllLanguageCodesType =
 ```
 
 ###  Available methods TruncateText, DateTime24HrFormat,DateTime12HrFormat, DateAndTime, TimeAgo
+
+### Case
+```
+toCamelCase("user_name")       // "userName"
+toCamelCase("user-name")       // "userName"
+toCamelCase("User Name")       // "userName"
+toCamelCase("USER_NAME")       // "userName"
+
+toSnakeCase("userName")        // "user_name"
+toSnakeCase("UserName")        // "user_name"
+toSnakeCase("user name")       // "user_name"
+toSnakeCase("user-name")       // "user_name"
+
+toLowerCase("userName")       // "user_name"
+toLowerCase("UserName")       // "user_name"
+toLowerCase("user-name")      // "user_name"
+
+toUpperCase("userName")       // "USER_NAME"
+toUpperCase("user name")      // "USER_NAME"
+toUpperCase("user-name")      // "USER_NAME"
+toUpperCase("UserName")       // "USER_NAME"
+
+toPascalCase("user_name")      // "UserName"
+toPascalCase("user name")      // "UserName"
+toPascalCase("user-name")      // "UserName"
+toPascalCase("USER_NAME")      // "UserName"
+
+input:
+    const mongoDoc = {
+      _id: 'abc123',
+      user_name: 'prasad',
+      address_info: {
+        city_name: 'hyderabad'
+      }
+    };
+
+toViewMapper(mongoDoc) -->
+{
+  id: 'abc123',
+  userName: 'prasad',
+  addressInfo: {
+    cityName: 'hyderabad'
+  }
+}
+
+
+const viewObj = {
+  id: 'abc123',
+  userName: 'prasad',
+  addressInfo: {
+    cityName: 'hyderabad'
+  }
+}
+
+toEntityMapper(viewObj) -->
+{
+  id: 'abc123',
+  user_name: 'prasad',
+  address_info: {
+    city_name: 'hyderabad'
+  }
+}
+
+toSchemaMapper(viewObj)  -->
+{
+  _id: 'abc123',
+  user_name: 'prasad',
+  address_info: {
+    city_name: 'hyderabad'
+  }
+}
+
+```
