@@ -4,8 +4,7 @@ export function toCamelCase(str: string): string {
     .replace(/^[A-Z]/, (chr) => chr.toLowerCase());
 }
 
-export function toSnakeCase(str: string, isMongoId: boolean = false): string {
-  if (str === 'id' && isMongoId) return '_id';
+export function toSnakeCase(str: string): string {
   return str
     .replace(/([a-z0-9])([A-Z])/g, '$1_$2')  // camelCase → camel_Case
     .replace(/[\s-]+/g, '_')                 // space/dash → underscore
@@ -40,25 +39,28 @@ export function toLowerCase(str: string): string {
     .toLowerCase();
 }
 
+function isPlainObject(obj: any): obj is Record<string, any> {
+  return Object.prototype.toString.call(obj) === '[object Object]';
+}
+
 export function toViewMapper(obj: any): any {
   if (Array.isArray(obj)) {
     return obj.map(toViewMapper);
-  } else if (obj !== null && typeof obj === 'object') {
+  } else if (isPlainObject(obj)) {
     return Object.fromEntries(
       Object.entries(obj).map(([key, value]) => [
-        toCamelCase(key),
+        toCamelCase(key === '_id' ? 'id' : key),
         toViewMapper(value),
       ])
     );
   }
-  return obj;
+  return obj; // Date, Buffer, Map, etc. returned as-is
 }
-
 
 export function toEntityMapper(obj: any): any {
   if (Array.isArray(obj)) {
     return obj.map(toEntityMapper);
-  } else if (obj !== null && typeof obj === 'object') {
+  } else if (isPlainObject(obj)) {
     return Object.fromEntries(
       Object.entries(obj).map(([key, value]) => [
         toSnakeCase(key),
@@ -66,19 +68,19 @@ export function toEntityMapper(obj: any): any {
       ])
     );
   }
-  return obj;
+  return obj; // Date, Buffer, Map, etc. returned as-is
 }
 
 export function toSchemaMapper(obj: any): any {
-  if (Array.isArray(obj)) {
-    return obj.map(toSchemaMapper);
-  } else if (obj !== null && typeof obj === 'object') {
+ if (Array.isArray(obj)) {
+    return obj.map(toEntityMapper);
+  } else if (isPlainObject(obj)) {
     return Object.fromEntries(
       Object.entries(obj).map(([key, value]) => [
-        toSnakeCase(key, true),
-        toSchemaMapper(value),
+        toSnakeCase(key === 'id' ? '_id' : key),
+        toEntityMapper(value),
       ])
     );
   }
-  return obj;
+  return obj; // Date, Buffer, Map, etc. returned as-is
 }

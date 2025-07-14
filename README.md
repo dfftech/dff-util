@@ -264,17 +264,6 @@ export type SessionUser = {
 };
 ```
 
-## ResponseType
-
-```
-ResponseType = {
-  status?: string | number;
-  data?: any;
-  error?: any;
-  total?: number;
-};
-
-```
 
 ## SearchByLimitType
 ```
@@ -354,6 +343,9 @@ export type ResponseType = {
   status?: string | number;
   data?: any;
   error?: any;
+  total?: number;
+  skip?: number;
+  limit?: number;
 };
 
 export type SearchByType = {
@@ -363,14 +355,6 @@ export type SearchByType = {
   searchTerm?: string;
 };
 
-export type PaginationResponseType = {
-  status?: string | number;
-  data?: any;
-  error?: any;
-  total?: number;
-  skip?: number;
-  limit?: number;
-};
 
 export type SearchByLimitType = {
   limit: number;
