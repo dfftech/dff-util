@@ -13,7 +13,7 @@ let uniqueId: number = 0;
 export const AppUniqueCode = () => {
   let time: number = new Date().getTime();
   if (uniqueId == time) {
-    while (new Date().getTime() < 1 + time) {}
+    while (new Date().getTime() < 1 + time) { }
     time = new Date().getTime();
   }
   uniqueId = time;
@@ -185,7 +185,7 @@ export const LangText = async (
 
 
 
-export const LangCountryCode = (lang: string) : LangCountryType => {
+export const LangCountryCode = (lang: string): LangCountryType => {
   const countryCode = lang.split("-")[1];
   const country = countries.find((c) => c.code === countryCode) || {} as CountryType;
   const language = languages.find((l) => l.lang === lang) || {} as LanguageType;
@@ -223,3 +223,37 @@ export const CurrencyConvert = async (from: string, to: string): Promise<number>
     throw new Error(`Currency conversion failed: ${error}`);
   }
 };
+
+
+export function EncodeBase64(input: string): string {
+  return Buffer.from(input, 'utf-8').toString('base64');
+}
+
+export function DecodeBase64(encoded: string): string {
+  return Buffer.from(encoded, 'base64').toString('utf-8');
+}
+
+export function EncodeURL(input: string): string {
+  try {
+    const decoded = decodeURIComponent(input);
+    return encodeURIComponent(decoded);
+  } catch {
+    return encodeURIComponent(input);
+  }
+}
+
+export function DecodeURL(input: string): string {
+  try {
+    return decodeURIComponent(input);
+  } catch {
+    return input;
+  }
+}
+
+export function SafeEncode(input: string): string {
+  return EncodeURL(EncodeBase64(input));
+}
+
+export function SafeDecode(encoded: string): string {
+  return DecodeBase64(DecodeURL(encoded));
+}

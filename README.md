@@ -575,6 +575,50 @@ const main = async () => {
 
 main();
 
+---------------------------------------------------
+
+// Base64
+const text = "Hello World!";
+const encodedBase64 = encodeBase64(text); // "SGVsbG8gV29ybGQh"
+const decodedBase64 = decodeBase64(encodedBase64); // "Hello World!"
+
+console.log(encodedBase64, decodedBase64);
+
+// URL Encode/Decode
+const url = "https://example.com/query?name=John Doe&city=New York";
+
+// First encode
+const encodedURL1 = encodeURL(url);
+console.log(encodedURL1);
+// Output: "https%3A%2F%2Fexample.com%2Fquery%3Fname%3DJohn%20Doe%26city%3DNew%20York"
+
+// Encode again (idempotent)
+const encodedURL2 = encodeURL(encodedURL1);
+console.log(encodedURL2 === encodedURL1); // true ✅
+
+// Decode
+const decodedURL1 = decodeURL(encodedURL1);
+console.log(decodedURL1); // "https://example.com/query?name=John Doe&city=New York"
+
+// Decode again (idempotent)
+const decodedURL2 = decodeURL(decodedURL1);
+console.log(decodedURL2 === decodedURL1); // true ✅
+
+const original = "Hello World! @#$% 😊";
+
+// Encode
+const safe = safeEncode(original);
+console.log(safe); 
+// Output: "U0dWc2JHOGdWMjl5YkdRPQ%3D%3D"
+
+// Decode
+const decoded = safeDecode(safe);
+console.log(decoded); 
+// Output: "Hello World! @#$% 😊"
+
+// Multiple encode/decode calls (idempotent)
+console.log(safeEncode(safeDecode(safe)) === safe); // true
+
 
 
 ```
