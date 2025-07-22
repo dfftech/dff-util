@@ -1,3 +1,5 @@
+import { AllLanguageCodes } from "./const-value";
+
 export function toCamelCase(str: string): string {
   return str
     .replace(/[_\s-]+(.)?/g, (_, chr) => (chr ? chr.toUpperCase() : ''))
@@ -43,10 +45,23 @@ function isPlainObject(obj: any): obj is Record<string, any> {
   return Object.prototype.toString.call(obj) === '[object Object]';
 }
 
+const LANGUAGE_CODE_SET = new Set<string>(AllLanguageCodes as unknown as string[]);
+
+function isLanguageMap(value: unknown) {
+  if (!isPlainObject(value)) return false;
+  const keys = Object.keys(value);
+  if (keys.length === 0) return false;
+  return keys.every((k) => LANGUAGE_CODE_SET.has(k));
+}
+
 export function toViewMapper(obj: any): any {
   if (Array.isArray(obj)) {
     return obj.map(toViewMapper);
-  } else if (isPlainObject(obj)) {
+  }
+  if (isLanguageMap(obj)) {
+    return obj;
+  }
+  if (isPlainObject(obj)) {
     return Object.fromEntries(
       Object.entries(obj).map(([key, value]) => [
         toCamelCase(key === '_id' ? 'id' : key),
@@ -57,24 +72,38 @@ export function toViewMapper(obj: any): any {
   return obj; // Date, Buffer, Map, etc. returned as-is
 }
 
-export function toEntityMapper(obj: any): any {
+export function toEntityMapper<T = any>(obj: T): any {
   if (Array.isArray(obj)) {
-    return obj.map(toEntityMapper);
-  } else if (isPlainObject(obj)) {
+    return obj.map((v) => toEntityMapper(v));
+  }
+
+  if (isLanguageMap(obj)) {
+    return obj; // preserve language codes exactly
+  }
+
+  if (isPlainObject(obj)) {
     return Object.fromEntries(
-      Object.entries(obj).map(([key, value]) => [
-        toSnakeCase(key),
-        toEntityMapper(value),
-      ])
+      Object.entries(obj).map(([key, value]) => {
+        const mappedKey = toSnakeCase(key);
+        return [mappedKey, toEntityMapper(value)];
+      })
     );
   }
-  return obj; // Date, Buffer, Map, etc. returned as-is
+
+  return obj; // primitives, Date, Buffer, etc.
 }
 
+
 export function toSchemaMapper(obj: any): any {
- if (Array.isArray(obj)) {
+  if (Array.isArray(obj)) {
     return obj.map(toEntityMapper);
-  } else if (isPlainObject(obj)) {
+  }
+
+  if (isLanguageMap(obj)) {
+    return obj; // do not transform language code keys
+  }
+
+  if (isPlainObject(obj)) {
     return Object.fromEntries(
       Object.entries(obj).map(([key, value]) => [
         toSnakeCase(key === 'id' ? '_id' : key),

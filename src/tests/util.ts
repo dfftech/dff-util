@@ -21,8 +21,8 @@ const CallCurrencyConvert = async () => {
 import { LangText } from "../main/util";
 
 const run = async () => {
- // await CallLangCountry();
- // await CallLangText();
+  // await CallLangCountry();
+  // await CallLangText();
   await CallCurrencyConvert();
 };
 
