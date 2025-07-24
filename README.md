@@ -265,17 +265,6 @@ export type SessionUser = {
 ```
 
 
-## SearchByLimitType
-```
-export type SearchByLimitType = {
-  limit: number;
-  skip: number;
-  query?: Record<string, any>;
-  orderBy?: string;
-  order: "ASC" | "DESC";
-};
-```
-
 ## CountryType
 ```
 export type CountryType = {
@@ -348,22 +337,26 @@ export type ResponseType = {
   limit?: number;
 };
 
+export type KeyValueType = {
+  [key: string]: any;
+}
+
 export type SearchByType = {
-  query?: Record<string, any>;
   orderBy?: string;
   order?: "ASC" | "DESC";
   searchTerm?: string;
+  [key: string]: any;
 };
-
 
 export type SearchByLimitType = {
   limit: number;
   skip: number;
-  query?: Record<string, any>;
   orderBy?: string;
   order?: "ASC" | "DESC";
   searchTerm?: string;
+  [key: string]: any;
 };
+
 ```
 
 

@@ -226,11 +226,11 @@ export const CurrencyConvert = async (from: string, to: string): Promise<number>
 
 
 export function EncodeBase64(input: string): string {
-  return Buffer.from(input, 'utf-8').toString('base64');
+  return btoa(input);
 }
 
 export function DecodeBase64(encoded: string): string {
-  return Buffer.from(encoded, 'base64').toString('utf-8');
+  return atob(encoded);
 }
 
 export function EncodeURL(input: string): string {

@@ -31,20 +31,24 @@ export type ResponseType = {
 };
 
 export type SearchByType = {
-  query?: Record<string, any>;
   orderBy?: string;
   order?: "ASC" | "DESC";
   searchTerm?: string;
+  [key: string]: any;
 };
 
 export type SearchByLimitType = {
   limit: number;
   skip: number;
-  query?: Record<string, any>;
   orderBy?: string;
   order?: "ASC" | "DESC";
   searchTerm?: string;
+  [key: string]: any;
 };
+
+export type KeyValueType = {
+  [key: string]: any;
+}
 
 export type CountryType = {
   code: string;           // ISO 3166-1 alpha-2
