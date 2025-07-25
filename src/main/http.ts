@@ -186,8 +186,7 @@ export class Http {
       const requestOptions: any = { method: method, headers: headers };
       const response = await fetch(fullUrl, requestOptions);
       const blob = await response.blob();
-      const buffer = Buffer.from(await blob.arrayBuffer());
-      return buffer;
+      return blob;
     } catch (error: any) {
       throw { url: fullUrl, requestId: headers['request-id'], error: error };
     }
