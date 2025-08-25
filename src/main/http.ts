@@ -1,5 +1,6 @@
 import { blob } from 'stream/consumers';
 import { AppUUID4 } from './util';
+import { ConstKeys } from './const-keys';
 
 export enum RespType {
   JSON = 'json',
@@ -67,7 +68,7 @@ export class Http {
       const response = await fetch(fullUrl, requestOptions);
       return await Http.RespData(response, type);
     } catch (error: any) {
-      throw { url: fullUrl, requestId: headers['request-id'], error: error };
+      throw { url: fullUrl, requestId: headers['request-id'], error: Http.ErrorWrapper(error) };
     }
   }
 
@@ -80,7 +81,7 @@ export class Http {
       const response = await fetch(url, requestOptions);
       return await Http.RespData(response, type);
     } catch (error: any) {
-      throw { url: url, requestId: headers['request-id'], body: data, error: error };
+      throw { url: url, requestId: headers['request-id'], body: data, error: Http.ErrorWrapper(error) };
     }
   }
 
@@ -93,7 +94,7 @@ export class Http {
       const response = await fetch(url, requestOptions);
       return await Http.RespData(response, type);
     } catch (error: any) {
-      throw { url: url, requestId: headers['request-id'], body: data, error: error };
+      throw { url: url, requestId: headers['request-id'], body: data, error: Http.ErrorWrapper(error) };
     }
   }
 
@@ -107,7 +108,7 @@ export class Http {
       const response = await fetch(fullUrl, requestOptions);
       return await Http.RespData(response, type);
     } catch (error: any) {
-      throw { url: fullUrl, requestId: headers['request-id'], error: error };
+      throw { url: fullUrl, requestId: headers['request-id'], error: Http.ErrorWrapper(error) };
     }
   }
 
@@ -122,7 +123,7 @@ export class Http {
       const response = await fetch(fullUrl, requestOptions);
       return await Http.RespData(response, type);
     } catch (error: any) {
-      throw { url: fullUrl, requestId: headers['request-id'], error: error };
+      throw { url: fullUrl, requestId: headers['request-id'], error: Http.ErrorWrapper(error) };
     }
   }
 
@@ -156,7 +157,7 @@ export class Http {
       const response = await fetch(url, requestOptions);
       return await Http.RespData(response, type);
     } catch (error: any) {
-      throw { url: url, requestId: headers['request-id'], error: error };
+      throw { url: url, requestId: headers['request-id'], error: Http.ErrorWrapper(error) };
     }
   }
 
@@ -174,7 +175,7 @@ export class Http {
       const response = await fetch(fullUrl, requestOptions);
       return response;
     } catch (error: any) {
-      throw { url: fullUrl, requestId: headers['request-id'], error: error };
+      throw { url: fullUrl, requestId: headers['request-id'], error: Http.ErrorWrapper(error) };
     }
   }
 
@@ -188,7 +189,11 @@ export class Http {
       const blob = await response.blob();
       return blob;
     } catch (error: any) {
-      throw { url: fullUrl, requestId: headers['request-id'], error: error };
+      throw { url: fullUrl, requestId: headers['request-id'], error: Http.ErrorWrapper(error) };
     }
+  }
+
+  static ErrorWrapper(errorData: any) {
+    return {...errorData, message: errorData.internal_message || errorData.message || ConstKeys.INVALID_DATA, main_message: errorData.message || ConstKeys.INVALID_DATA}
   }
 }

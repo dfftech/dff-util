@@ -2,17 +2,24 @@
 
 import { Http } from '../index';
 
-const url = '/auth/partner/signin';
-const reqBody = { language: 'en-US', mobile: '111111111', provider: 'mobile', telCode: '+91' };
+Http.API_BASE_URL = 'http://localhost:4000';
 
-const runHttpExample = async () => {
+
+const signinRun = async () => {
+  const payload = {
+  userid: 'aaa@anymail.com',
+  password: '11111',
+  type: 'admin',
+  provider: 'email',
+};
+
   try {
-    const res = await Http.Post(url, reqBody, null);
+    const res = await Http.Post("/auth/signin", payload, {});
     console.log(res);
-    return res;
-  } catch (error) {
-    console.log(error);
+  } catch (e) {
+    console.error(e);
   }
 };
 
-runHttpExample();
+signinRun();
+
