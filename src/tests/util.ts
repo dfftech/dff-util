@@ -1,29 +1,45 @@
 // bun run src/tests/util.ts
 
-import { CurrencyConvert, LangCountryCode } from "../main/util";
-
-const CallLangCountry = () => {
-  const lang = "en-US";
-  const country = LangCountryCode(lang);
-  console.log("LangCountryCode:: ", country);
-};
-
-const CallLangText = async () => {
-  const resp = await LangText("Hello, how are you?", "en-US", "hi-IN");
-  console.log("Resp Kannada:: ", resp);
-}
-
-const CallCurrencyConvert = async () => {
-  const resp = await CurrencyConvert("USD", "INR");
-  console.log("Resp Currency:: ", resp);
-}
-
-import { LangText } from "../main/util";
+import { QueryCond } from '../main/util';
 
 const run = async () => {
-  // await CallLangCountry();
-  // await CallLangText();
-  await CallCurrencyConvert();
+  const input = [
+    'isApproved=true',
+    'status!=false',
+    'age>18',
+    'score<100',
+    'height>=170',
+    'weight<=80',
+    'type=["accept","inprogress"]',
+    'type!=["accept","inprogress"]',
+    'role in ["admin","editor"]',
+    'role not in ["admin","editor"]',
+    'role notin ["admin","editor"]',
+    'deletedAt is null',
+    'deletedAt is not null',
+    'deletedAt isnull',
+    'updatedAt isnotnull',
+    'deletedAt=null',
+    'deletedAt!=null',
+    'age between [18,30]',
+    'createdAt between 2020-01-01..2020-01-31',
+    'name like "Jo%"',
+    'email ilike "%@gmail.com"',
+    'title contains "hello"',
+    'code startswith "AB"',
+    'code endswith "99"',
+    'path regex "^/api/.*$"',
+    'archivedAt',
+    '!archivedAt',
+    'name="a,b"',
+    'meta={"a":1,"b":true}',
+    'tags=["x,y","z"]',
+  ].join(',');
+
+  const got = QueryCond(input);
+
+  console.log('QueryCond input:', input);
+  console.log('QueryCond output:', JSON.stringify(got, null, 2));
 };
 
 run();

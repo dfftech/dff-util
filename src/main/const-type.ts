@@ -30,20 +30,14 @@ export type ResponseType = {
   limit?: number;
 };
 
-export type SearchByType = {
+export type SearchType = {
+  limit?: number;
+  skip?: number;
   orderBy?: string;
-  order?: "ASC" | "DESC";
+  order?: 'ASC' | 'DESC';
   searchTerm?: string;
-  [key: string]: any;
-};
-
-export type SearchByLimitType = {
-  limit: number;
-  skip: number;
-  orderBy?: string;
-  order?: "ASC" | "DESC";
-  searchTerm?: string;
-  [key: string]: any;
+  active?: boolean;
+  filters?: string;
 };
 
 export type KeyValueType = {

@@ -341,20 +341,14 @@ export type KeyValueType = {
   [key: string]: any;
 }
 
-export type SearchByType = {
+export type SearchType = {
+  limit?: number;
+  skip?: number;
   orderBy?: string;
-  order?: "ASC" | "DESC";
+  order?: 'ASC' | 'DESC';
   searchTerm?: string;
-  [key: string]: any;
-};
-
-export type SearchByLimitType = {
-  limit: number;
-  skip: number;
-  orderBy?: string;
-  order?: "ASC" | "DESC";
-  searchTerm?: string;
-  [key: string]: any;
+  active?: boolean;
+  filters?: string;
 };
 
 ```
@@ -601,12 +595,12 @@ const original = "Hello World! @#$% 😊";
 
 // Encode
 const safe = safeEncode(original);
-console.log(safe); 
+console.log(safe);
 // Output: "U0dWc2JHOGdWMjl5YkdRPQ%3D%3D"
 
 // Decode
 const decoded = safeDecode(safe);
-console.log(decoded); 
+console.log(decoded);
 // Output: "Hello World! @#$% 😊"
 
 // Multiple encode/decode calls (idempotent)
@@ -937,3 +931,189 @@ toSchemaMapper(viewObj)  -->
 }
 
 ```
+
+```
+ const got = QueryCond(input);
+
+ example:
+QueryCond input: isApproved=true,status!=false,age>18,score<100,height>=170,weight<=80,type=["accept","inprogress"],type!=["accept","inprogress"],role in ["admin","editor"],role not in ["admin","editor"],role notin ["admin","editor"],deletedAt is null,deletedAt is not null,deletedAt isnull,updatedAt isnotnull,deletedAt=null,deletedAt!=null,age between [18,30],createdAt between 2020-01-01..2020-01-31,name like "Jo%",email ilike "%@gmail.com",title contains "hello",code startswith "AB",code endswith "99",path regex "^/api/.*$",archivedAt,!archivedAt,name="a,b",meta={"a":1,"b":true},tags=["x,y","z"]
+QueryCond output: [
+  {
+    "key": "isApproved",
+    "opt": "=",
+    "value": true
+  },
+  {
+    "key": "status",
+    "opt": "!=",
+    "value": false
+  },
+  {
+    "key": "age",
+    "opt": ">",
+    "value": 18
+  },
+  {
+    "key": "score",
+    "opt": "<",
+    "value": 100
+  },
+  {
+    "key": "height",
+    "opt": ">=",
+    "value": 170
+  },
+  {
+    "key": "weight",
+    "opt": "<=",
+    "value": 80
+  },
+  {
+    "key": "type",
+    "opt": "in",
+    "value": [
+      "accept",
+      "inprogress"
+    ]
+  },
+  {
+    "key": "type",
+    "opt": "not in",
+    "value": [
+      "accept",
+      "inprogress"
+    ]
+  },
+  {
+    "key": "role",
+    "opt": "in",
+    "value": [
+      "admin",
+      "editor"
+    ]
+  },
+  {
+    "key": "role",
+    "opt": "not in",
+    "value": [
+      "admin",
+      "editor"
+    ]
+  },
+  {
+    "key": "role",
+    "opt": "not in",
+    "value": [
+      "admin",
+      "editor"
+    ]
+  },
+  {
+    "key": "deletedAt",
+    "opt": "is null",
+    "value": null
+  },
+  {
+    "key": "deletedAt",
+    "opt": "is not null",
+    "value": null
+  },
+  {
+    "key": "deletedAt",
+    "opt": "is null",
+    "value": null
+  },
+  {
+    "key": "updatedAt",
+    "opt": "is not null",
+    "value": null
+  },
+  {
+    "key": "deletedAt",
+    "opt": "is null",
+    "value": null
+  },
+  {
+    "key": "deletedAt",
+    "opt": "is not null",
+    "value": null
+  },
+  {
+    "key": "age",
+    "opt": "between",
+    "value": [
+      18,
+      30
+    ]
+  },
+  {
+    "key": "createdAt",
+    "opt": "between",
+    "value": [
+      "2020-01-01",
+      "2020-01-31"
+    ]
+  },
+  {
+    "key": "name",
+    "opt": "like",
+    "value": "Jo%"
+  },
+  {
+    "key": "email",
+    "opt": "ilike",
+    "value": "%@gmail.com"
+  },
+  {
+    "key": "title",
+    "opt": "contains",
+    "value": "hello"
+  },
+  {
+    "key": "code",
+    "opt": "startswith",
+    "value": "AB"
+  },
+  {
+    "key": "code",
+    "opt": "endswith",
+    "value": "99"
+  },
+  {
+    "key": "path",
+    "opt": "regex",
+    "value": "^/api/.*$"
+  },
+  {
+    "key": "archivedAt",
+    "opt": "exists",
+    "value": true
+  },
+  {
+    "key": "archivedAt",
+    "opt": "exists",
+    "value": false
+  },
+  {
+    "key": "name",
+    "opt": "=",
+    "value": "a,b"
+  },
+  {
+    "key": "meta",
+    "opt": "=",
+    "value": {
+      "a": 1,
+      "b": true
+    }
+  },
+  {
+    "key": "tags",
+    "opt": "in",
+    "value": [
+      "x,y",
+      "z"
+    ]
+  }
+]
+ ```
