@@ -279,6 +279,10 @@ export type CountryType = {
 };
 ```
 
+### List of country and Locaion
+```
+const countriesList = countries;
+```
 ## LangDirType, OrderType, ThemeType, UnixTimestampType, OptionType, FileType
 ```
 export type LangDirType = "ltr" | "rtl";
