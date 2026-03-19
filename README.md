@@ -282,6 +282,8 @@ export type CountryType = {
 ### List of country and Locaion
 ```
 const countriesList = countries;
+
+countries: CountryType[] = [ ..., ..., ... ];
 ```
 ## LangDirType, OrderType, ThemeType, UnixTimestampType, OptionType, FileType
 ```
