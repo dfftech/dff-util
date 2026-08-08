@@ -28,6 +28,11 @@ export type ResponseType = {
   total?: number;
   skip?: number;
   limit?: number;
+  meta?: {
+    traceId?: string | number;
+    timestamp?: string | number;
+    duration?: number;
+  };
 };
 
 export type SearchType = {
@@ -43,6 +48,14 @@ export type SearchType = {
 export type KeyValueType = {
   [key: string]: any;
 }
+
+export type JsonValueType = string | number | boolean | null | JsonValueType[] | { [key: string]: JsonValueType };
+export type RequestBodyType = Record<string, JsonValueType>;
+export type RequestQueryType = Record<string, string | number | boolean | null>;
+export type RequestByIdType = {
+  id: string | number;
+};
+
 
 export type CountryType = {
   code: string;           // ISO 3166-1 alpha-2

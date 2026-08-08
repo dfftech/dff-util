@@ -341,10 +341,11 @@ export type ResponseType = {
   total?: number;
   skip?: number;
   limit?: number;
-};
-
-export type KeyValueType = {
-  [key: string]: any;
+  meta?: {
+    traceId?: string | number;
+    timestamp?: string | number;
+    duration?: number;
+  };
 }
 
 export type SearchType = {
@@ -355,6 +356,17 @@ export type SearchType = {
   searchTerm?: string;
   active?: boolean;
   filters?: string;
+};
+
+export type KeyValueType = {
+  [key: string]: any;
+}
+
+export type JsonValueType = string | number | boolean | null | JsonValueType[] | { [key: string]: JsonValueType };
+export type RequestBodyType = Record<string, JsonValueType>;
+export type RequestQueryType = Record<string, string | number | boolean | null>;
+export type RequestByIdType = {
+  id: string | number;
 };
 
 ```
