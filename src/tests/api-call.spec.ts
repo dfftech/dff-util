@@ -1,58 +1,61 @@
 import assert from 'node:assert/strict';
 import { CallLangText, CallCurrencyConvert } from '../index';
 
-const original = Object.getOwnPropertyDescriptor(globalThis, 'XMLHttpRequest');
+const originalFetch = globalThis.fetch;
 let body = '';
 let status = 200;
+let statusText = 'OK';
 let url = '';
+let method = '';
 let count = 0;
-class MockXHR {
-  status = 0;
-  statusText = '';
-  responseText = '';
-  open(method: string, target: string, async: boolean) {
+globalThis.fetch = async (input: RequestInfo | URL, init?: RequestInit) => {
+  count++;
+  url = String(input);
+  method = init?.method || 'GET';
+  assert.equal(init?.body, undefined);
+  return new Response(body, { status, statusText });
+};
+
+async function run() {
+  try {
+    body = JSON.stringify({ translation: 'నమస్కారం' });
+    assert.equal(await CallLangText('Hello / world?', 'en-US', 'te-IN'), 'నమస్కారం');
     assert.equal(method, 'GET');
-    assert.equal(async, false);
-    url = target;
-  }
-  send(data: null) {
-    assert.equal(data, null);
-    count++;
-    this.status = status;
-    this.responseText = body;
+    assert.equal(url, 'https://lingva.ml/api/v1/en/te/Hello%20%2F%20world%3F');
+    await assert.rejects(() => CallLangText('', 'en', 'te'), /Invalid input/);
+    await assert.rejects(() => CallLangText('hello', '../', 'te'), /Invalid language/);
+    body = JSON.stringify({ error: 'Unsupported language' });
+    await assert.rejects(() => CallLangText('hello', 'en', 'te'), /Unsupported language/);
+    body = JSON.stringify({ rates: { USD: 0.012 } });
+    assert.equal(await CallCurrencyConvert('INR', 'USD'), 0.012);
+    assert.equal(method, 'GET');
+    assert.equal(url, 'https://api.frankfurter.dev/v1/latest?from=INR&to=USD');
+    const before = count;
+    assert.equal(await CallCurrencyConvert('USD', 'USD'), 1);
+    assert.equal(count, before);
+    await assert.rejects(() => CallCurrencyConvert('', 'USD'), /Invalid input/);
+    body = '{}';
+    await assert.rejects(() => CallCurrencyConvert('INR', 'USD'), /numeric exchange rate/);
+    status = 503;
+    statusText = 'Service Unavailable';
+    body = 'Service unavailable';
+    await assert.rejects(() => CallCurrencyConvert('INR', 'USD'), /503.*Service unavailable/);
+    await assert.rejects(() => CallLangText('hello', 'en', 'te'), /503.*Service unavailable/);
+    status = 200;
+    statusText = 'OK';
+    body = 'invalid json';
+    await assert.rejects(() => CallCurrencyConvert('INR', 'USD'), SyntaxError);
+    await assert.rejects(() => CallLangText('hello', 'en', 'te'), SyntaxError);
+    delete (globalThis as any).fetch;
+    await assert.rejects(() => CallCurrencyConvert('INR', 'USD'), /requires a runtime with fetch support/);
+    await assert.rejects(() => CallLangText('hello', 'en', 'te'), /requires a runtime with fetch support/);
+    console.log('API call tests passed');
+  } finally {
+    globalThis.fetch = originalFetch;
   }
 }
-Object.defineProperty(globalThis, 'XMLHttpRequest', { configurable: true, value: MockXHR });
-try {
-  body = JSON.stringify({ translation: 'నమస్కారం' });
-  assert.equal(CallLangText('Hello / world?', 'en-US', 'te-IN'), 'నమస్కారం');
-  assert.equal(url, 'https://lingva.ml/api/v1/en/te/Hello%20%2F%20world%3F');
-  assert.throws(() => CallLangText('', 'en', 'te'), /Invalid input/);
-  assert.throws(() => CallLangText('hello', '../', 'te'), /Invalid language/);
-  body = JSON.stringify({ error: 'Unsupported language' });
-  assert.throws(() => CallLangText('hello', 'en', 'te'), /Unsupported language/);
-  body = JSON.stringify({ rates: { USD: 0.012 } });
-  assert.equal(CallCurrencyConvert('INR', 'USD'), 0.012);
-  assert.equal(url, 'https://api.frankfurter.dev/v1/latest?from=INR&to=USD');
-  const before = count;
-  assert.equal(CallCurrencyConvert('USD', 'USD'), 1);
-  assert.equal(count, before);
-  assert.throws(() => CallCurrencyConvert('', 'USD'), /Invalid input/);
-  body = '{}';
-  assert.throws(() => CallCurrencyConvert('INR', 'USD'), /numeric exchange rate/);
-  status = 503;
-  body = 'Service unavailable';
-  assert.throws(() => CallCurrencyConvert('INR', 'USD'), /503.*Service unavailable/);
-  assert.throws(() => CallLangText('hello', 'en', 'te'), /503.*Service unavailable/);
-  status = 200;
-  body = 'invalid json';
-  assert.throws(() => CallCurrencyConvert('INR', 'USD'), SyntaxError);
-  assert.throws(() => CallLangText('hello', 'en', 'te'), SyntaxError);
-  delete (globalThis as any).XMLHttpRequest;
-  assert.throws(() => CallCurrencyConvert('INR', 'USD'), /requires a browser/);
-  assert.throws(() => CallLangText('hello', 'en', 'te'), /requires a browser/);
-  console.log('API call tests passed');
-} finally {
-  if (original) Object.defineProperty(globalThis, 'XMLHttpRequest', original);
-  else delete (globalThis as any).XMLHttpRequest;
-}
+
+run().catch((error) => {
+  console.error(error);
+  process.exit(1);
+});

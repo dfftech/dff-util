@@ -11,6 +11,7 @@ Select a topic below to view its reference and examples.
 | [AppRandomString](#general-utilities) | [AppUniqueCode](#general-utilities) | [AppCodeByType](#general-utilities) | [AppCode](#general-utilities) | [AppDaysBack](#general-utilities) | [AppAddDays](#general-utilities) | [AppUUID4](#general-utilities) |
 | [TruncateText](#text-and-date-formatting) | [DateTime24HrFormat](#text-and-date-formatting) | [DateTime12HrFormat](#text-and-date-formatting) | [DateAndTime](#text-and-date-formatting) | [TimeAgo](#text-and-date-formatting) | [toCamelCase](#case-conversion-and-object-mapping) | [toSnakeCase](#case-conversion-and-object-mapping) |
 | [toLowerCase](#case-conversion-and-object-mapping) | [toUpperCase](#case-conversion-and-object-mapping) | [toPascalCase](#case-conversion-and-object-mapping) | [toViewMapper](#case-conversion-and-object-mapping) | [toEntityMapper](#case-conversion-and-object-mapping) | [toSchemaMapper](#case-conversion-and-object-mapping) | [QueryCond](#query-conditions-querycond) |
+| [CsvToJson](#csv-and-json-conversion) | [JsonToCsv](#csv-and-json-conversion) | | | | | |
 
 **[Http](#http)**
 
@@ -104,9 +105,9 @@ These examples reflect the current implementation. `toCamelCase` preserves inter
 
 | Function | Key conversion | Example input | Example output |
 | :--- | :--- | :--- | :--- |
-| `toViewMapper` | Convert keys to camel case and `_id` to `id` recursively | `{ _id: 'abc123', user_name: 'prasad', address_info: { city_name: 'hyderabad' } }` | `{ id: 'abc123', userName: 'prasad', addressInfo: { cityName: 'hyderabad' } }` |
-| `toEntityMapper` | Convert keys to snake case recursively; preserve `id` | `{ id: 'abc123', userName: 'prasad', addressInfo: { cityName: 'hyderabad' } }` | `{ id: 'abc123', user_name: 'prasad', address_info: { city_name: 'hyderabad' } }` |
-| `toSchemaMapper` | Convert top-level `id` to `_id` and keys to snake case; nested values use `toEntityMapper` | `{ id: 'abc123', userName: 'prasad', addressInfo: { cityName: 'hyderabad' } }` | `{ _id: 'abc123', user_name: 'prasad', address_info: { city_name: 'hyderabad' } }` |
+| `toViewMapper` | Convert keys to camel case and `_id` to `id` recursively | `{ _id: 'abc123', user_name: 'k7m2x9', address_info: { city_name: 'hyderabad' } }` | `{ id: 'abc123', userName: 'k7m2x9', addressInfo: { cityName: 'hyderabad' } }` |
+| `toEntityMapper` | Convert keys to snake case recursively; preserve `id` | `{ id: 'abc123', userName: 'k7m2x9', addressInfo: { cityName: 'hyderabad' } }` | `{ id: 'abc123', user_name: 'k7m2x9', address_info: { city_name: 'hyderabad' } }` |
+| `toSchemaMapper` | Convert top-level `id` to `_id` and keys to snake case; nested values use `toEntityMapper` | `{ id: 'abc123', userName: 'k7m2x9', addressInfo: { cityName: 'hyderabad' } }` | `{ _id: 'abc123', user_name: 'k7m2x9', address_info: { city_name: 'hyderabad' } }` |
 
 All three preserve language maps whose keys are recognized language codes. Primitive and non-plain-object values are returned unchanged. `toViewMapper` and `toEntityMapper` process array items recursively; `toSchemaMapper` uses `toEntityMapper` for array items, so their `id` keys remain `id`.
 
@@ -299,6 +300,67 @@ QueryCond output: [
   }
 ]
 ```
+
+### CSV and JSON conversion
+
+`CsvToJson` and `JsonToCsv` convert between CSV text and JSON objects. The delimiter is optional and defaults to `,`. Fields that contain the delimiter, double quotes, or line breaks are quoted; quotes inside a field are escaped by doubling (`""`), following RFC 4180.
+
+```typescript
+import { CsvToJson, JsonToCsv } from 'dff-util';
+
+const rows = CsvToJson('name,note\n"Doe, John","He said ""hello"""');
+// [{ name: 'Doe, John', note: 'He said "hello"' }]
+
+const csv = JsonToCsv([
+  { name: 'Doe, John', note: 'He said "hello"' },
+  { name: 'k7m2x9', city: 'Hyderabad' },
+]);
+// name,note,city
+// "Doe, John","He said ""hello""",
+// k7m2x9,,Hyderabad
+
+const tsv = JsonToCsv([{ name: 'k7m2x9', city: 'Hyderabad' }], '\t');
+const fromTsv = CsvToJson(tsv, '\t');
+
+const multiline = CsvToJson(`name,bio
+k7m2x9,"line1
+line2"
+n4t9pw,"a
+b
+c"`);
+// [
+//   { name: 'k7m2x9', bio: 'line1\nline2' },
+//   { name: 'n4t9pw', bio: 'a\nb\nc' },
+// ]
+
+JsonToCsv([
+  { name: 'k7m2x9', note: 'line1\nline2' },
+  { name: 'n4t9pw', note: 'hello\r\nworld' },
+]);
+// name,note
+// k7m2x9,"line1
+// line2"
+// n4t9pw,"hello
+// world"
+```
+
+| Function | Arguments | Result |
+| :--- | :--- | :--- |
+| `CsvToJson` | `csv, delimiter = ','` | Array of objects; header row becomes keys |
+| `JsonToCsv` | `data, delimiter = ','` | CSV text with a header row |
+
+`JsonToCsv` accepts an object, an array of objects, or a JSON string of either. Nested objects and arrays are written with `JSON.stringify`. An empty array, `null`, or `undefined` input returns `''`. `CsvToJson` also accepts `null` or `undefined` and returns `[]`. Blank lines are skipped when they cannot be a data row. A leading BOM is stripped. `\n` and `\r\n` are accepted. Unterminated quoted fields throw.
+
+Every header still becomes a property on each row. `null` and `undefined` write as empty cells; an empty cell parses as `null`.
+
+| JSON value | CSV cell | Parsed value |
+| :--- | :--- | :--- |
+| `null` | empty cell | `null` |
+| `undefined` | empty cell | `null` |
+| missing key | empty cell | `null` |
+| `''` | `""` | `''` |
+
+The delimiter may be any non-empty string except a quote or line break, including `;`, `\t`, or `||`.
 
 ## Http
 
@@ -500,22 +562,20 @@ const fileBlob = await Http.Get(
 
 ## Call Api
 
-These helpers are defined in `src/main/api-call.ts` and exported from `dff-util`. All three use synchronous `XMLHttpRequest`: they return values directly and throw errors synchronously. No `await` is needed. Browser XHR support and server CORS permission are required; requests block while waiting.
+These helpers are defined in `src/main/api-call.ts` and exported from `dff-util`. All three use `fetch` and return Promises. Use `await` (or `.then`) in an async function or a module that supports top-level await. A runtime with `fetch` is required (browsers and Node.js 18+). In the browser, the remote service must permit your origin through CORS.
 
 The former names `Hbs`, `LangText`, and `CurrencyConvert` are now `CallHbs`, `CallLangText`, and `CallCurrencyConvert`. Import them from `dff-util` or `main/api-call` instead of `main/util`.
 
 ### Handlebars rendering (CallHbs)
 
-`CallHbs` renders inline templates through `https://hbs.rndpro.in`, using the same request format as the HBS service. It uses synchronous `XMLHttpRequest` and sends the template and data to that service. It returns directly, without a Promise. Standard Node.js does not provide `XMLHttpRequest`.
-
-Synchronous requests block the browser while waiting and are deprecated on the main thread. The service must permit your browser origin and JSON POST requests through CORS. See [synchronous XHR limitations](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest_API/Synchronous_and_Asynchronous_Requests).
+`CallHbs` renders inline templates through `https://hbs.rndpro.in`, using the same request format as the HBS service. It POSTs JSON `{ template, data }` with `Content-Type: application/json` and returns a Promise. The service must permit your origin and JSON POST requests through CORS.
 
 | Call | Endpoint | Return type |
 | :--- | :--- | :--- |
-| `CallHbs(template, data)` | `POST /render` | `string` |
-| `CallHbs(template, items, true)` | `POST /multi` | `string[]` |
+| `await CallHbs(template, data)` | `POST /render` | `Promise<string>` |
+| `await CallHbs(template, items, true)` | `POST /multi` | `Promise<string[]>` |
 
-The TypeScript return type is `string | string[]`; the table shows the result for each mode.
+The TypeScript return type is `Promise<string | string[]>`; the table shows the result for each mode.
 
 #### Supported inputs and rendering modes
 
@@ -524,10 +584,10 @@ Based on the `dff-hbs` service in the local `hbs` repository (`src/models.rs`, `
 | Input or mode | Type | Behavior / example |
 | :--- | :--- | :--- |
 | `template` | `string` | Inline Handlebars text, such as `Hello, {{name}}!`; not a registered template name |
-| `data` with `multi = false` (default) | `RequestBodyType` | One object used as the template context: `{ name: 'Prasad' }` |
+| `data` with `multi = false` (default) | `RequestBodyType` | One object used as the template context: `{ name: 'k7m2x9' }` |
 | `data` with `multi = false` | `RequestBodyType[]` | One array context; iterate using `{{#each this}}{{name}}{{/each}}` |
 | `data` with `multi = true` | `RequestBodyType[]` | Render the same template for each object in one `/multi` request |
-| Object property values | JSON string, number, boolean, null, object, or array | Nested data is supported, for example `{ user: { name: 'Prasad' }, active: true }` |
+| Object property values | JSON string, number, boolean, null, object, or array | Nested data is supported, for example `{ user: { name: 'k7m2x9' }, active: true }` |
 | Single result | `string` | Rendered text from `/render` |
 | Batch result | `string[]` | Rendered strings in input order from `/multi`; an empty array returns `[]` |
 | `data` is `null`/`undefined` | no request | Returns `template` unchanged; `[template]` when `multi = true` |
@@ -575,21 +635,21 @@ Quote examples show the helper value before any HTML escaping. The registered he
 ```typescript
 import { CallHbs } from 'dff-util';
 
-const rendered = CallHbs('Hello, {{to_pascal_case name}}!', {
-  name: 'prasad',
+const rendered = await CallHbs('Hello, {{to_pascal_case name}}!', {
+  name: 'k7m2x9',
 });
-console.log(rendered); // Hello, Prasad!
+console.log(rendered); // Hello, K7m2x9!
 ```
 
 #### Render multiple data items in one request
 
 ```typescript
-const rendered = CallHbs(
+const rendered = await CallHbs(
   'Hello, {{to_pascal_case name}}!',
-  [{ name: 'prasad' }, { name: 'monika' }],
+  [{ name: 'k7m2x9' }, { name: 'n4t9pw' }],
   true,
 );
-console.log(rendered); // ['Hello, Prasad!', 'Hello, Monika!']
+console.log(rendered); // ['Hello, K7m2x9!', 'Hello, N4t9pw!']
 ```
 
 The third argument defaults to `false`. Set it to `true` to render the same template once per array item, preserving order. An empty batch returns `[]`. With `false`, an array is treated as a single template context, for example with `{{#each this}}`.
@@ -600,49 +660,49 @@ Both endpoints receive JSON in the form `{ template, data }`. Templates can use 
 
 ```typescript
 try {
-  const result = CallHbs('Hello, {{name}}!', { name: 'Prasad' });
+  const result = await CallHbs('Hello, {{name}}!', { name: 'k7m2x9' });
   console.log(result);
 } catch (error) {
   console.error(error instanceof Error ? error.message : error);
 }
 ```
 
-Non-success HTTP responses throw an error containing the status and response text. The service returns `400` for invalid requests and `500` for rendering failures; a failing batch reports the item index and rejects the entire batch. Network, CORS, and JSON-parsing errors propagate to the caller. Successful batch responses are checked to ensure they contain an array of strings.
+Non-success HTTP responses reject with an error containing the status and response text. The service returns `400` for invalid requests and `500` for rendering failures; a failing batch reports the item index and rejects the entire batch. Network, CORS, and JSON-parsing errors propagate to the caller. Successful batch responses are checked to ensure they contain an array of strings.
 
 ### Language translation (CallLangText)
 
-`CallLangText(text, sourceLocale, targetLocale)` returns the translated text as a `string`.
+`CallLangText(text, sourceLocale, targetLocale)` returns a Promise that resolves to the translated text as a `string`.
 
 ```typescript
 import { CallLangText } from 'dff-util';
 
 try {
-  const translated = CallLangText('Hello, how are you?', 'en-US', 'te-IN');
+  const translated = await CallLangText('Hello, how are you?', 'en-US', 'te-IN');
   console.log(translated);
 } catch (error) {
   console.error(error instanceof Error ? error.message : error);
 }
 ```
 
-Uses `https://lingva.ml/api/v1`, taking the two-letter language prefix from each locale. Text is URL-encoded. Empty inputs, invalid language codes, unsuccessful HTTP responses, and service-reported errors throw.
+Uses `https://lingva.ml/api/v1`, taking the two-letter language prefix from each locale. Text is URL-encoded. Empty inputs, invalid language codes, unsuccessful HTTP responses, and service-reported errors reject.
 
 ### Currency conversion (CallCurrencyConvert)
 
-`CallCurrencyConvert(fromCurrency, toCurrency)` returns the exchange rate as a `number`: the target-currency value of one source-currency unit.
+`CallCurrencyConvert(fromCurrency, toCurrency)` returns a Promise that resolves to the exchange rate as a `number`: the target-currency value of one source-currency unit.
 
 ```typescript
 import { CallCurrencyConvert } from 'dff-util';
 
 try {
-  const rate = CallCurrencyConvert('INR', 'USD');
+  const rate = await CallCurrencyConvert('INR', 'USD');
   console.log(rate);
-  console.log(CallCurrencyConvert('USD', 'USD')); // 1; no HTTP request
+  console.log(await CallCurrencyConvert('USD', 'USD')); // 1; no HTTP request
 } catch (error) {
   console.error(error instanceof Error ? error.message : error);
 }
 ```
 
-Uses `https://api.frankfurter.dev/v1/latest`. Missing inputs, unsuccessful HTTP responses, and missing or nonnumeric rates throw. Network and JSON-parsing errors propagate to the caller.
+Uses `https://api.frankfurter.dev/v1/latest`. Missing inputs, unsuccessful HTTP responses, and missing or nonnumeric rates reject. Network and JSON-parsing errors propagate to the caller.
 
 ## Tokens and encryption
 
