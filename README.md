@@ -530,6 +530,7 @@ Based on the `dff-hbs` service in the local `hbs` repository (`src/models.rs`, `
 | Object property values | JSON string, number, boolean, null, object, or array | Nested data is supported, for example `{ user: { name: 'Prasad' }, active: true }` |
 | Single result | `string` | Rendered text from `/render` |
 | Batch result | `string[]` | Rendered strings in input order from `/multi`; an empty array returns `[]` |
+| `data` is `null`/`undefined` | no request | Returns `template` unchanged; `[template]` when `multi = true` |
 
 #### Template helper reference
 
@@ -593,7 +594,7 @@ console.log(rendered); // ['Hello, Prasad!', 'Hello, Monika!']
 
 The third argument defaults to `false`. Set it to `true` to render the same template once per array item, preserving order. An empty batch returns `[]`. With `false`, an array is treated as a single template context, for example with `{{#each this}}`.
 
-Both endpoints receive JSON in the form `{ template, data }`. Templates can use the string helpers and `switch` helper registered by HBS. Data must be a JSON object or an array of JSON objects; batch rendering requires an array of objects. Empty templates are allowed. Omitting `multi` is equivalent to passing `false`.
+Both endpoints receive JSON in the form `{ template, data }`. Templates can use the string helpers and `switch` helper registered by HBS. Data must be a JSON object or an array of JSON objects; batch rendering requires an array of objects. If `data` is `null` or `undefined`, no request is made and the template is returned unchanged, or as `[template]` when `multi = true`. Empty templates are allowed. Omitting `multi` is equivalent to passing `false`.
 
 #### Handle failures
 

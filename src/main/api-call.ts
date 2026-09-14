@@ -17,9 +17,18 @@ function requestText(url: string, label: string, body?: RequestBodyType): string
 }
 
 /** Render an inline Handlebars template using the hosted HBS service. */
-export function CallHbs(template: string, data: RequestBodyType | RequestBodyType[], multi = false): string | string[] {
-  if (typeof template !== 'string' || data === undefined) {
-    throw new Error('Invalid input: template must be a string and data is required');
+export function CallHbs(
+  template: string,
+  data: RequestBodyType | RequestBodyType[] | null | undefined,
+  multi = false,
+): string | string[] {
+  if (typeof template !== 'string') {
+    throw new Error('Invalid input: template must be a string');
+  }
+  // With no data, no request is made: return the template unchanged,
+  // or a single-item array when rendering in multi mode.
+  if (data === null || data === undefined) {
+    return multi ? [template] : template;
   }
   const isObject = (value: unknown) => value !== null && typeof value === 'object' && !Array.isArray(value);
   if (!(Array.isArray(data) ? data.every(isObject) : isObject(data))) {

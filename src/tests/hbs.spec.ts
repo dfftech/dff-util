@@ -47,8 +47,15 @@ function run() {
     assert.equal(calls.pop()?.url, 'https://hbs.rndpro.in/render');
     response = { text: '', status: 200 };
     assert.equal(CallHbs('', {}), '');
+    // data null / undefined returns the template unchanged, without any network request
+    const before = calls.length;
+    assert.equal(CallHbs(template, null), template);
+    assert.equal(CallHbs(template, undefined), template);
+    assert.deepEqual(CallHbs(template, null, true), [template]);
+    assert.deepEqual(CallHbs(template, undefined, true), [template]);
+    assert.equal(calls.length, before);
     const count = calls.length;
-    for (const invalid of [null, 'text', 42, true, [null], ['text'], [[]]]) {
+    for (const invalid of ['text', 42, true, [null], ['text'], [[]]]) {
       assert.throws(() => CallHbs(template, invalid as any), /JSON object/);
     }
 
