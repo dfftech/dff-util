@@ -1,6 +1,6 @@
 import { CountryType } from "./const-type";
 
-export const countries: CountryType[] = [
+export const Countries: CountryType[] = [
   {
     code: "AF",
     name: "Afghanistan",

@@ -1,7 +1,7 @@
 import { generate } from 'randomstring';
 import { CountryType, LangCountryType, LanguageType } from './const-type';
 import { ConstValue } from './const-value';
-import { countries } from './countries';
+import { Countries } from './countries';
 import { languages } from './languages';
 import { RegExp } from './reg-exr';
 
@@ -137,34 +137,9 @@ export const TimeAgo = (date: Date): string => {
   return 'Just now';
 };
 
-export const LangText = async (data: string, source: string, target: string) => {
-  if (!data || !source || !target) {
-    throw new Error('Invalid input: data, source, or target is missing');
-  }
-  const src = source.split('-')[0]; // e.g., "en-US" -> "en"
-  const tgt = target.split('-')[0]; // e.g., "te-IN" -> "te"
-  if (!/^[a-zA-Z]{2}$/.test(src) || !/^[a-zA-Z]{2}$/.test(tgt)) {
-    throw new Error('Invalid language code format');
-  }
-  const encodedData = encodeURIComponent(data);
-  const url = `https://lingva.ml/api/v1/${src}/${tgt}/${encodedData}`;
-  const res = await fetch(url, {
-    method: 'GET',
-  });
-  if (!res.ok) {
-    throw new Error(`Translation failed: ${res.status} ${res.statusText}`);
-  }
-  const json = await res.json();
-  if (json.error) {
-    throw new Error(`API error: ${json.error}`);
-  }
-
-  return json.translation || '';
-};
-
 export const LangCountryCode = (lang: string): LangCountryType => {
   const countryCode = lang.split('-')[1];
-  const country = countries.find((c) => c.code === countryCode) || ({} as CountryType);
+  const country = Countries.find((c) => c.code === countryCode) || ({} as CountryType);
   const language = languages.find((l) => l.lang === lang) || ({} as LanguageType);
   return {
     lang: lang,
@@ -177,28 +152,6 @@ export const LangCountryCode = (lang: string): LangCountryType => {
     flag: country.flag,
     dir: language.dir,
   };
-};
-
-export const CurrencyConvert = async (from: string, to: string): Promise<number> => {
-  if (!from || !to) {
-    throw new Error('Invalid input: from or to is missing');
-  }
-  if (from === to) {
-    return 1;
-  }
-  try {
-    const url = `https://api.frankfurter.app/latest?from=${from}&to=${to}`;
-    const res = await fetch(url, {
-      method: 'GET',
-    });
-    if (!res.ok) {
-      throw new Error(`Currency conversion failed: ${res.status} ${res.statusText}`);
-    }
-    const json = await res.json();
-    return json.rates[to];
-  } catch (error) {
-    throw new Error(`Currency conversion failed: ${error}`);
-  }
 };
 
 export function EncodeBase64(input: string): string {

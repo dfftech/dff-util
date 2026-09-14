@@ -29,7 +29,7 @@ export type ResponseType = {
   skip?: number;
   limit?: number;
   meta?: {
-    traceId?: string | number;
+    requestId?: string | number;
     timestamp?: string | number;
     duration?: number;
   };
