@@ -2,43 +2,50 @@ import { AllLanguageCodes } from "./const-value";
 
 export function toCamelCase(str: string): string {
   return str
-    .replace(/[_\s-]+(.)?/g, (_, chr) => (chr ? chr.toUpperCase() : ''))
-    .replace(/^[A-Z]/, (chr) => chr.toLowerCase());
+    .replace(/[_\s-]+(.)?/g, (_, chr) => (chr ? chr.toUpperCase() : '')) // snake/kebab/space → camel
+    .replace(/^[A-Z]/, (chr) => chr.toLowerCase());                     // PascalCase → camelCase
 }
 
 export function toSnakeCase(str: string): string {
   return str
-    .replace(/([a-z0-9])([A-Z])/g, '$1_$2')  // camelCase → camel_Case
-    .replace(/[\s-]+/g, '_')                 // space/dash → underscore
-    .replace(/__+/g, '_')                    // collapse multiple underscores
+    .replace(/([a-z0-9])([A-Z])/g, '$1_$2') // camelCase → camel_Case
+    .replace(/[\s-]+/g, '_')                // space/kebab → underscore
+    .replace(/__+/g, '_')                   // collapse multiple underscores
+    .toLowerCase();
+}
+
+export function toKebabCase(str: string): string {
+  return str
+    .replace(/([a-z0-9])([A-Z])/g, '$1-$2') // camelCase → camel-Case
+    .replace(/[_\s]+/g, '-')                // snake/space → hyphen
+    .replace(/--+/g, '-')                   // collapse multiple hyphens
     .toLowerCase();
 }
 
 export function toPascalCase(str: string): string {
   return str
-    .replace(/[_\s-]+/g, ' ')
+    .replace(/[_\s-]+/g, ' ') // snake/kebab/space → words
     .replace(/\w+/g, (word) =>
-      word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+      word.charAt(0).toUpperCase() + word.slice(1).toLowerCase() // capitalize each word
     )
-    .replace(/\s+/g, '');
+    .replace(/\s+/g, ''); // join words
+}
+
+function toUnderscoreSeparated(str: string): string {
+  return str
+    .replace(/([a-z0-9])([A-Z])/g, '$1_$2')    // camelCase → camel_Case
+    .replace(/([A-Z]+)([A-Z][a-z])/g, '$1_$2') // XMLHttp → XML_Http
+    .replace(/[\s-]+/g, '_')                   // space/kebab → underscore
+    .replace(/__+/g, '_')                      // collapse multiple underscores
+    .replace(/^_+|_+$/g, '');                  // trim leading/trailing _
 }
 
 export function toUpperCase(str: string): string {
-  return str
-    .replace(/([a-z0-9])([A-Z])/g, '$1_$2') // camelCase to snake_case
-    .replace(/[\s-]+/g, '_')                // spaces/hyphens to underscores
-    .replace(/([A-Z]+)/g, '_$1')            // handle acronyms (optional)
-    .replace(/^_+|_+$/g, '')                // trim leading/trailing _
-    .toUpperCase();
+  return toUnderscoreSeparated(str).toUpperCase();
 }
 
 export function toLowerCase(str: string): string {
-  return str
-    .replace(/([a-z0-9])([A-Z])/g, '$1_$2')
-    .replace(/[\s-]+/g, '_')
-    .replace(/([A-Z]+)/g, '_$1')
-    .replace(/^_+|_+$/g, '')
-    .toLowerCase();
+  return toUnderscoreSeparated(str).toLowerCase();
 }
 
 function isPlainObject(obj: any): obj is Record<string, any> {

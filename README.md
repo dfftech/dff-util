@@ -9,9 +9,9 @@ Select a topic below to view its reference and examples.
 |  |  |  |  |  |  |  |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | [AppRandomString](#general-utilities) | [AppUniqueCode](#general-utilities) | [AppCodeByType](#general-utilities) | [AppCode](#general-utilities) | [AppDaysBack](#general-utilities) | [AppAddDays](#general-utilities) | [AppUUID4](#general-utilities) |
-| [TruncateText](#text-and-date-formatting) | [DateTime24HrFormat](#text-and-date-formatting) | [DateTime12HrFormat](#text-and-date-formatting) | [DateAndTime](#text-and-date-formatting) | [TimeAgo](#text-and-date-formatting) | [toCamelCase](#case-conversion-and-object-mapping) | [toSnakeCase](#case-conversion-and-object-mapping) |
+| [TruncateText](#text-and-date-formatting) | [DateTime24HrFormat](#text-and-date-formatting) | [DateTime12HrFormat](#text-and-date-formatting) | [DateAndTime](#text-and-date-formatting) | [TimeAgo](#text-and-date-formatting) | [toCamelCase](#case-conversion-and-object-mapping) | [toSnakeCase](#case-conversion-and-object-mapping) | [toKebabCase](#case-conversion-and-object-mapping) |
 | [toLowerCase](#case-conversion-and-object-mapping) | [toUpperCase](#case-conversion-and-object-mapping) | [toPascalCase](#case-conversion-and-object-mapping) | [toViewMapper](#case-conversion-and-object-mapping) | [toEntityMapper](#case-conversion-and-object-mapping) | [toSchemaMapper](#case-conversion-and-object-mapping) | [QueryCond](#query-conditions-querycond) |
-| [CsvToJson](#csv-and-json-conversion) | [JsonToCsv](#csv-and-json-conversion) | | | | | |
+| [CsvToJson](#csv-and-json-conversion) | [JsonToCsv](#csv-and-json-conversion) | [toKebabCase](#case-conversion-and-object-mapping) | | | | |
 
 **[Http](#http)**
 
@@ -95,11 +95,12 @@ Available helpers:
 | :--- | :--- | :--- |
 | `toCamelCase` | Join words in camel case | `user_name` → `userName`; `user-name` → `userName`; `User Name` → `userName`; `USER_NAME` → `uSERNAME` |
 | `toSnakeCase` | Separate words with underscores and lowercase | `userName` → `user_name`; `UserName` → `user_name`; `user name` → `user_name`; `user-name` → `user_name` |
-| `toLowerCase` | Convert word separators to underscores and lowercase | `user-name` → `user_name`; `userName` → `user__name`; `UserName` → `user__name` |
-| `toUpperCase` | Convert word separators to underscores and uppercase | `user-name` → `USER_NAME`; `user name` → `USER_NAME`; `userName` → `USER__NAME`; `UserName` → `USER__NAME` |
+| `toKebabCase` | Separate words with hyphens and lowercase | `userName` → `user-name`; `UserName` → `user-name`; `user name` → `user-name`; `user_name` → `user-name` |
+| `toLowerCase` | Convert word separators to underscores and lowercase | `user-name` → `user_name`; `userName` → `user_name`; `UserName` → `user_name` |
+| `toUpperCase` | Convert word separators to underscores and uppercase | `user-name` → `USER_NAME`; `user name` → `USER_NAME`; `userName` → `USER_NAME`; `UserName` → `USER_NAME` |
 | `toPascalCase` | Capitalize each separated word and join | `user_name` → `UserName`; `user name` → `UserName`; `user-name` → `UserName`; `USER_NAME` → `UserName` |
 
-These examples reflect the current implementation. `toCamelCase` preserves internal uppercase letters; `toLowerCase` and `toUpperCase` can produce double underscores before uppercase letters.
+These examples reflect the current implementation. `toCamelCase` preserves internal uppercase letters.
 
 #### Object mapping
 
@@ -1227,6 +1228,7 @@ export type SessionUser = {
   email?: string;
   mobile?: string;
   name?: string;
+  tenant?: string;
   roles: string[];
   type?: string;
 };
@@ -1240,6 +1242,7 @@ export type SessionInfo = {
   email?: string;
   mobile?: string;
   name?: string;
+  tenant?: string;
   roles: string[];
   type?: string;
   requestId?: string;

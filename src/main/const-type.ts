@@ -3,6 +3,7 @@ export type SessionInfo = {
   email?: string;
   mobile?: string;
   name?: string;
+  tenant?: string;
   roles: string[];
   requestId?: string;
   type?: string;
@@ -17,6 +18,7 @@ export type SessionUser = {
   email?: string;
   mobile?: string;
   name?: string;
+  tenant?: string;
   roles: string[];
   type?: string;
 };
