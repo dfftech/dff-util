@@ -1,6 +1,6 @@
 {
   "name": "dff-util",
-  "version": "1.4.1",
+  "version": "1.4.3",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -9,6 +9,8 @@
     "pp": "npm run build"
   },
   "keywords": [
+    "dff-util",
+    "dff-utils",
     "npm",
     "dff",
     "util"
