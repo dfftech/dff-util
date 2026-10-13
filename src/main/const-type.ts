@@ -53,9 +53,15 @@ export type KeyValueType = {
 
 export type JsonValueType = string | number | boolean | null | JsonValueType[] | { [key: string]: JsonValueType };
 export type RequestBodyType = Record<string, JsonValueType>;
-export type RequestQueryType = Record<string, string | number | boolean | null>;
+export type RequestParamType = Record<string, string | number | boolean | null>;
 export type RequestByIdType = {
-  id: string | number;
+  id: string;
+};
+
+export type PubSubEventType = {
+  id: string;
+  name?: string;
+  raw?: string;
 };
 
 

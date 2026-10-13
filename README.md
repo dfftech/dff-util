@@ -45,7 +45,7 @@ Select a topic below to view its reference and examples.
 | :--- | :--- | :--- | :--- | :--- |
 | [LangDirType](#common-types) | [OrderType](#common-types) | [ThemeType](#common-types) | [UnixTimestampType](#common-types) | [OptionType](#common-types) |
 | [FileType](#common-types) | [ResponseType](#request-and-response-types) | [SearchType](#request-and-response-types) | [KeyValueType](#request-and-response-types) | [JsonValueType](#request-and-response-types) |
-| [RequestBodyType](#request-and-response-types) | [RequestQueryType](#request-and-response-types) | [RequestByIdType](#request-and-response-types) | [SessionUser](#session-user-sessionuser) | [SessionInfo](#session-information-sessioninfo) |
+| [RequestBodyType](#request-and-response-types) | [RequestParamType](#request-and-response-types) | [RequestByIdType](#request-and-response-types) | [SessionUser](#session-user-sessionuser) | [SessionInfo](#session-information-sessioninfo) |
 
 **[Constants and validation](#constants-and-validation)**
 
@@ -1213,9 +1213,15 @@ export type KeyValueType = {
 
 export type JsonValueType = string | number | boolean | null | JsonValueType[] | { [key: string]: JsonValueType };
 export type RequestBodyType = Record<string, JsonValueType>;
-export type RequestQueryType = Record<string, string | number | boolean | null>;
+export type RequestParamType = Record<string, string | number | boolean | null>;
 export type RequestByIdType = {
-  id: string | number;
+  id: string;
+};
+
+export type PubSubEventType = {
+  id: string;
+  name?: string;
+  raw?: string;
 };
 
 ```
