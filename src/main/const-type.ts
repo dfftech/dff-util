@@ -11,6 +11,7 @@ export type SessionInfo = {
   iat?: number;
   exp?: number;
   key: string;
+  createdAt: string;
 };
 
 export type SessionUser = {
@@ -51,11 +52,20 @@ export type KeyValueType = {
   [key: string]: any;
 }
 
-export type JsonValueType = string | number | boolean | null | JsonValueType[] | { [key: string]: JsonValueType };
-export type RequestBodyType = Record<string, JsonValueType>;
-export type RequestParamType = Record<string, string | number | boolean | null>;
 export type RequestByIdType = {
   id: string;
+};
+
+export type RequestByNameType = {
+  name: string;
+};
+
+export type RequestByTypeType = {
+  type: string;
+};
+
+export type RequestByCodeType = {
+  code: string;
 };
 
 export type PubSubEventType = {
@@ -64,6 +74,9 @@ export type PubSubEventType = {
   raw?: string;
 };
 
+export type JsonValueType = string | number | boolean | null | JsonValueType[] | { [key: string]: JsonValueType };
+export type RequestBodyType = Record<string, JsonValueType>;
+export type RequestParamType = Record<string, string | number | boolean | null>;
 
 export type CountryType = {
   code: string;           // ISO 3166-1 alpha-2
