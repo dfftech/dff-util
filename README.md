@@ -1216,7 +1216,7 @@ export type KeyValueType = {
 export type RequestQueryType = {
   query?: string;
   active?: boolean;
-  data?: any;
+  data?: string;
   raw?: string;
   filters?: string;
 };
@@ -1225,7 +1225,7 @@ export type RequestByIdType = {
   id: string;
   query?: string;
   active?: boolean;
-  data?: any;
+  data?: string;
   raw?: string;
   filters?: string;
 };
@@ -1234,7 +1234,7 @@ export type RequestByNameType = {
   name: string;
   query?: string;
   active?: boolean;
-  data?: any;
+  data?: string;
   raw?: string;
   filters?: string;
 };
@@ -1243,7 +1243,7 @@ export type RequestByTypeType = {
   type: string;
   query?: string;
   active?: boolean;
-  data?: any;
+  data?: string;
   raw?: string;
   filters?: string;
 };
@@ -1252,7 +1252,7 @@ export type RequestByCodeType = {
   code: string;
   query?: string;
   active?: boolean;
-  data?: any;
+  data?: string;
   raw?: string;
   filters?: string;
 };
@@ -1262,7 +1262,7 @@ export type PubSubEventType = {
   name?: string;
   query?: string;
   active?: boolean;
-  data?: any;
+  data?: string;
   raw?: string;
   filters?: string;
 };
