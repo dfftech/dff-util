@@ -52,26 +52,58 @@ export type KeyValueType = {
   [key: string]: any;
 }
 
+export type RequestQueryType = {
+  query?: string;
+  active?: boolean;
+  data?: any;
+  raw?: string;
+  filters?: string;
+};
+
 export type RequestByIdType = {
   id: string;
+  query?: string;
+  active?: boolean;
+  data?: any;
+  raw?: string;
+  filters?: string;
 };
 
 export type RequestByNameType = {
   name: string;
+  query?: string;
+  active?: boolean;
+  data?: any;
+  raw?: string;
+  filters?: string;
 };
 
 export type RequestByTypeType = {
   type: string;
+  query?: string;
+  active?: boolean;
+  data?: any;
+  raw?: string;
+  filters?: string;
 };
 
 export type RequestByCodeType = {
   code: string;
+  query?: string;
+  active?: boolean;
+  data?: any;
+  raw?: string;
+  filters?: string;
 };
 
 export type PubSubEventType = {
   id: string;
   name?: string;
+  query?: string;
+  active?: boolean;
+  data?: any;
   raw?: string;
+  filters?: string;
 };
 
 export type JsonValueType = string | number | boolean | null | JsonValueType[] | { [key: string]: JsonValueType };

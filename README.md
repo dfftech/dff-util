@@ -45,7 +45,8 @@ Select a topic below to view its reference and examples.
 | :--- | :--- | :--- | :--- | :--- |
 | [LangDirType](#common-types) | [OrderType](#common-types) | [ThemeType](#common-types) | [UnixTimestampType](#common-types) | [OptionType](#common-types) |
 | [FileType](#common-types) | [ResponseType](#request-and-response-types) | [SearchType](#request-and-response-types) | [KeyValueType](#request-and-response-types) | [JsonValueType](#request-and-response-types) |
-| [RequestBodyType](#request-and-response-types) | [RequestParamType](#request-and-response-types) | [RequestByIdType](#request-and-response-types) | [SessionUser](#session-user-sessionuser) | [SessionInfo](#session-information-sessioninfo) |
+| [RequestBodyType](#request-and-response-types) | [RequestParamType](#request-and-response-types) | [RequestQueryType](#request-and-response-types) | [RequestByIdType](#request-and-response-types) | [RequestByNameType](#request-and-response-types) |
+| [RequestByTypeType](#request-and-response-types) | [RequestByCodeType](#request-and-response-types) | [PubSubEventType](#request-and-response-types) | [SessionUser](#session-user-sessionuser) | [SessionInfo](#session-information-sessioninfo) |
 
 **[Constants and validation](#constants-and-validation)**
 
@@ -1212,26 +1213,58 @@ export type KeyValueType = {
 }
 
 
+export type RequestQueryType = {
+  query?: string;
+  active?: boolean;
+  data?: any;
+  raw?: string;
+  filters?: string;
+};
+
 export type RequestByIdType = {
   id: string;
+  query?: string;
+  active?: boolean;
+  data?: any;
+  raw?: string;
+  filters?: string;
 };
 
 export type RequestByNameType = {
   name: string;
+  query?: string;
+  active?: boolean;
+  data?: any;
+  raw?: string;
+  filters?: string;
 };
 
 export type RequestByTypeType = {
   type: string;
+  query?: string;
+  active?: boolean;
+  data?: any;
+  raw?: string;
+  filters?: string;
 };
 
 export type RequestByCodeType = {
   code: string;
+  query?: string;
+  active?: boolean;
+  data?: any;
+  raw?: string;
+  filters?: string;
 };
 
 export type PubSubEventType = {
   id: string;
   name?: string;
+  query?: string;
+  active?: boolean;
+  data?: any;
   raw?: string;
+  filters?: string;
 };
 
 export type JsonValueType = string | number | boolean | null | JsonValueType[] | { [key: string]: JsonValueType };
