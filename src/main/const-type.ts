@@ -109,6 +109,7 @@ export type CountryType = {
 export type LangDirType = "ltr" | "rtl";
 export type OrderType = "ASC" | "DESC";
 export type ThemeType = "light" | "dark";
+export type PersonaType = "admin" | "staff" | "user";
 export type UnixTimestampType = number & { __brand: "UnixTimestamp" };
 
 export type OptionType = {

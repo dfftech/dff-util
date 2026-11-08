@@ -43,7 +43,7 @@ Select a topic below to view its reference and examples.
 
 |  |  |  |  |  |
 | :--- | :--- | :--- | :--- | :--- |
-| [LangDirType](#common-types) | [OrderType](#common-types) | [ThemeType](#common-types) | [UnixTimestampType](#common-types) | [OptionType](#common-types) |
+| [LangDirType](#common-types) | [OrderType](#common-types) | [ThemeType](#common-types) | [PersonaType](#common-types) | [UnixTimestampType](#common-types) | [OptionType](#common-types) |
 | [FileType](#common-types) | [ResponseType](#request-and-response-types) | [SearchType](#request-and-response-types) | [KeyValueType](#request-and-response-types) | [JsonValueType](#request-and-response-types) |
 | [RequestBodyType](#request-and-response-types) | [RequestParamType](#request-and-response-types) | [RequestQueryType](#request-and-response-types) | [RequestByIdType](#request-and-response-types) | [RequestByNameType](#request-and-response-types) |
 | [RequestByTypeType](#request-and-response-types) | [RequestByCodeType](#request-and-response-types) | [PubSubEventType](#request-and-response-types) | [SessionUser](#session-user-sessionuser) | [SessionInfo](#session-information-sessioninfo) |
@@ -1164,6 +1164,7 @@ export type AllLanguageCodesType =
 export type LangDirType = "ltr" | "rtl";
 export type OrderType = "ASC" | "DESC";
 export type ThemeType = "light" | "dark";
+export type PersonaType = "admin" | "staff" | "user";
 export type UnixTimestampType = number & { __brand: "UnixTimestamp" };
 
 export type OptionType = {
