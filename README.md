@@ -1212,60 +1212,49 @@ export type KeyValueType = {
   [key: string]: any;
 }
 
-
 export type RequestQueryType = {
+  id?: string;
   query?: string;
   active?: boolean;
   data?: string;
-  raw?: string;
   filters?: string;
+  key?: string;
+  value?: string;
+  label?: string;
+  type?: string;
+  code?: string;
+  name?: string;
 };
 
+// `id` is required; all RequestQueryType fields remain optional.
 export type RequestByIdType = {
   id: string;
-  query?: string;
-  active?: boolean;
-  data?: string;
-  raw?: string;
-  filters?: string;
-};
+} & RequestQueryType;
 
+// `name` is required; all RequestQueryType fields remain optional.
 export type RequestByNameType = {
   name: string;
-  query?: string;
-  active?: boolean;
-  data?: string;
-  raw?: string;
-  filters?: string;
-};
+} & RequestQueryType;
 
+// `type` is required; all RequestQueryType fields remain optional.
 export type RequestByTypeType = {
   type: string;
-  query?: string;
-  active?: boolean;
-  data?: string;
-  raw?: string;
-  filters?: string;
-};
+} & RequestQueryType;
 
+// `code` is required; all RequestQueryType fields remain optional.
 export type RequestByCodeType = {
   code: string;
-  query?: string;
-  active?: boolean;
-  data?: string;
-  raw?: string;
-  filters?: string;
-};
+} & RequestQueryType;
+
+// `key` is required; all RequestQueryType fields remain optional.
+export type RequestByKeyType = {
+  key: string;
+} & RequestQueryType;
 
 export type PubSubEventType = {
   id: string;
-  name?: string;
-  query?: string;
-  active?: boolean;
-  data?: string;
   raw?: string;
-  filters?: string;
-};
+} & RequestQueryType;
 
 export type JsonValueType = string | number | boolean | null | JsonValueType[] | { [key: string]: JsonValueType };
 export type RequestBodyType = Record<string, JsonValueType>;

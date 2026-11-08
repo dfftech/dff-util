@@ -53,58 +53,43 @@ export type KeyValueType = {
 }
 
 export type RequestQueryType = {
+  id?: string;
   query?: string;
   active?: boolean;
   data?: string;
-  raw?: string;
   filters?: string;
+  key?: string;
+  value?: string;
+  label?: string;
+  type?: string;
+  code?: string;
+  name?: string;
 };
 
 export type RequestByIdType = {
   id: string;
-  query?: string;
-  active?: boolean;
-  data?: string;
-  raw?: string;
-  filters?: string;
-};
+} & RequestQueryType;
 
 export type RequestByNameType = {
   name: string;
-  query?: string;
-  active?: boolean;
-  data?: string;
-  raw?: string;
-  filters?: string;
-};
+} & RequestQueryType;;
 
 export type RequestByTypeType = {
   type: string;
-  query?: string;
-  active?: boolean;
-  data?: string;
-  raw?: string;
-  filters?: string;
-};
+} & RequestQueryType;;
 
 export type RequestByCodeType = {
   code: string;
-  query?: string;
-  active?: boolean;
-  data?: string;
-  raw?: string;
-  filters?: string;
-};
+} & RequestQueryType;
+
+export type RequestByKeyType = {
+  key: string;
+} & RequestQueryType;
 
 export type PubSubEventType = {
   id: string;
-  name?: string;
-  query?: string;
-  active?: boolean;
-  data?: string;
   raw?: string;
-  filters?: string;
-};
+} & RequestQueryType; ;
 
 export type JsonValueType = string | number | boolean | null | JsonValueType[] | { [key: string]: JsonValueType };
 export type RequestBodyType = Record<string, JsonValueType>;
